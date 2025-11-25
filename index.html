@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHL 26 Team Randomizer</title>
+    <!-- Tailwind CSS via CDN for quick styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-extrabold text-center mb-4">NHL 26 Team Randomizer</h1>
+        <p class="text-center text-gray-300 mb-6">
+            This tool will create a balanced
+            three‑game round‑robin tournament for <em>NHL 26</em>.  Use the same seed to share
+            results – by default the seed is based on the current hour in Denver (America/Denver),
+            so everyone will see the same matchups.  At the end of your three games you can crown
+            the <strong>GCD</strong> (Greatest Common Denominator) if someone wins all games or the
+            <strong>LCD</strong> (Lowest Common Denominator) if someone loses them all.
+        </p>
+        <div class="flex flex-col items-center mb-6 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-4">
+            <input
+                id="seedInput"
+                type="number"
+                class="rounded px-3 py-2 text-black w-48"
+                placeholder="Enter seed (optional)"
+            />
+            <button
+                id="generateBtn"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+            >
+                Generate
+            </button>
+            <button
+                id="rerollBtn"
+                class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded"
+            >
+                Reroll +1
+            </button>
+        </div>
+        <div id="matchups" class="space-y-10"></div>
+        <div class="mt-8 text-sm text-gray-400 text-center">
+            <p>
+                Note: Overpowered teams (Tampa Bay Lightning and Colorado Avalanche) are excluded from
+                selections. The higher‑rated team in each matchup is highlighted for Nick.
+            </p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
