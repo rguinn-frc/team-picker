@@ -3,7 +3,7 @@ name: Update teams.json
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 1 * * 4" # every thursday at 01:00 UTC
+    - cron: "0 1 * * 4" # every Thursday at 01:00 UTC
 
 permissions:
   contents: write
