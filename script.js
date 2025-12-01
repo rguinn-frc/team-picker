@@ -7,6 +7,7 @@ const ENABLE_LIVE_STATS = true;
 //   and updating fetchTeamStats() to hit your proxy URL.
 
 const BANNED_ABBRS = ["TBL", "COL"]; // Lightning, Avalanche
+const PARTNERS = ["Ryan", "Tom", "Dylan"]; // Nick's possible partners
 
 //-------------------------------------------------------------
 // TEAM COLORS (for avoiding color clashes)
@@ -190,13 +191,19 @@ function generateMatchups(seed) {
 //-------------------------------------------------------------
 // 6. RENDERING
 //-------------------------------------------------------------
-function createTeamCard(team, isNick) {
+function createTeamCard(team, isNick, partner) {
   const logoUrl = `https://assets.nhle.com/logos/nhl/svg/${team.abbr}_dark.svg`;
 
   const card = document.createElement("div");
   card.className =
     "flex flex-col items-center border rounded-lg p-4 w-full sm:w-1/2 " +
     (isNick ? "border-yellow-500" : "border-gray-700");
+
+  const partnerBadge = isNick
+    ? `<span class="mt-3 px-2 py-1 bg-yellow-500 text-black text-xs rounded">
+         Nick${partner ? " + " + partner : ""} gets this team
+       </span>`
+    : "";
 
   card.innerHTML = `
     <img src="${logoUrl}" alt="${team.name} logo"
@@ -207,23 +214,47 @@ function createTeamCard(team, isNick) {
       <span><strong>GF/G:</strong> ${team.gf.toFixed(2)}</span>
       <span><strong>GA/G:</strong> ${team.ga.toFixed(2)}</span>
     </div>
-    ${
-      isNick
-        ? '<span class="mt-3 px-2 py-1 bg-yellow-500 text-black text-xs rounded">Nick gets this team</span>'
-        : ""
-    }
+    ${partnerBadge}
   `;
   return card;
 }
 
-function renderMatchups(matchups) {
+// mix the integer seed to reduce correlation between adjacent seeds
+function mixSeed(seed) {
+  // 32-bit unsigned mix: xor with golden ratio, multiply, add constant
+  return (Math.imul(seed ^ 0x9e3779b1, 1664525) + 1013904223) >>> 0;
+}
+
+function assignPartners(seed, count) {
+  // Use a mixed seed so nearby seeds produce different shuffles
+  const rng = createLCG(mixSeed(seed + 1337));
+
+  // Deterministically shuffle PARTNERS with the seeded RNG (Fisher-Yates)
+  const pool = [...PARTNERS];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
+  // If count > pool.length, wrap around in the shuffled order
+  const picks = [];
+  for (let i = 0; i < count; i++) {
+    picks.push(pool[i % pool.length]);
+  }
+  return picks;
+}
+
+function renderMatchups(matchups, seed) {
   const container = document.getElementById("matchups");
   container.innerHTML = "";
+
+  const partners = assignPartners(seed, matchups.length);
 
   matchups.forEach((pair, index) => {
     const [t1, t2] = pair;
     const nickTeam = t1.rating >= t2.rating ? t1 : t2;
     const otherTeam = nickTeam === t1 ? t2 : t1;
+    const partner = partners[index];
 
     const wrapper = document.createElement("div");
     const heading = document.createElement("h2");
@@ -233,8 +264,8 @@ function renderMatchups(matchups) {
     const row = document.createElement("div");
     row.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch";
 
-    row.appendChild(createTeamCard(nickTeam, true));
-    row.appendChild(createTeamCard(otherTeam, false));
+    row.appendChild(createTeamCard(nickTeam, true, partner));
+    row.appendChild(createTeamCard(otherTeam, false, null));
 
     wrapper.appendChild(heading);
     wrapper.appendChild(row);
@@ -280,18 +311,18 @@ async function init() {
 
   document.getElementById("generateBtn").addEventListener("click", () => {
     const s = getSeed();
-    renderMatchups(generateMatchups(s));
+    renderMatchups(generateMatchups(s), s);
   });
 
   document.getElementById("rerollBtn").addEventListener("click", () => {
     const current = getSeed();
     const next = current + 1;
     seedInput.value = next;
-    renderMatchups(generateMatchups(next));
+    renderMatchups(generateMatchups(next), next);
   });
 
   // initial render
-  renderMatchups(generateMatchups(initialSeed));
+  renderMatchups(generateMatchups(initialSeed), initialSeed);
 }
 
 window.addEventListener("DOMContentLoaded", init);
