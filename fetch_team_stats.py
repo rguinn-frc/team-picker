@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import requests
 import urllib3
+import json
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -96,8 +97,7 @@ def fetch_team_stats():
 
 def main():
     data = fetch_team_stats()
-
-    print("const FALLBACK_TEAMS = [")
+    teams_list = []
 
     for row in data:
         name = row.get("franchiseName", "Unknown")
@@ -105,20 +105,21 @@ def main():
 
         if abbr is None:
             # If a new franchise appears, you'll see it and can add it to TEAM_ABBRS
-            print(f"  // WARNING: no abbrev mapping for '{name}', skipping")
+            print(f"// WARNING: no abbrev mapping for '{name}', skipping")
             continue
 
-        pts = row.get("points", 0)
-        gf = float(row.get("goalsForPerGame", 0.0))
-        ga = float(row.get("goalsAgainstPerGame", 0.0))
-        color = TEAM_COLORS.get(abbr, "unknown")
+        teams_list.append({
+            "name": name,
+            "abbr": abbr,
+            "pts": row.get("points", 0),
+            "gf": float(row.get("goalsForPerGame", 0.0)),
+            "ga": float(row.get("goalsAgainstPerGame", 0.0))
+        })
 
-        print(
-            f"  {{ name: '{name}', abbr: '{abbr}', pts: {pts}, "
-            f"gf: {gf:.2f}, ga: {ga:.2f}, color: '{color}' }},"
-        )
+    with open("teams.json", "w", encoding="utf-8") as f:
+        json.dump(teams_list, f, ensure_ascii=False, indent=2)
 
-    print("];")
+    print("teams.json has been generated.")
 
 if __name__ == "__main__":
     main()

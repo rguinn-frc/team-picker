@@ -1,10 +1,10 @@
 //-------------------------------------------------------------
 // CONFIG
 //-------------------------------------------------------------
-const ENABLE_LIVE_STATS = false; 
-// ^ Keep this false for now. If you later add a backend proxy
-//   that returns NHL stats, you can set this to true and update
-//   fetchTeamStats() to hit your proxy URL.
+const ENABLE_LIVE_STATS = true; 
+// ^ Set to true to always try loading teams.json from your static host.
+//   Later, you can switch to a backend proxy by setting this to true
+//   and updating fetchTeamStats() to hit your proxy URL.
 
 const BANNED_ABBRS = ["TBL", "COL"]; // Lightning, Avalanche
 
@@ -90,30 +90,16 @@ const FALLBACK_TEAMS = [
 ];
 
 //-------------------------------------------------------------
-// 2. (OPTIONAL) LIVE NHL STATS VIA PROXY
+// 2. LIVE STATS FROM STATIC JSON (same-origin)
 //-------------------------------------------------------------
 async function fetchLiveTeamStatsViaProxy() {
-  if (!ENABLE_LIVE_STATS) {
-    throw new Error("Live stats disabled");
-  }
-
-  // IMPORTANT:
-  // This URL MUST be something YOU host that:
-  //   - runs server-side,
-  //   - calls the NHL API, and
-  //   - returns JSON with [{ name, abbr, pts, gf, ga }] & CORS headers.
-  //
-  // Example: if you deploy a Netlify function at
-  //   /.netlify/functions/nhl-teams
-  // you would put that path here:
-  const url = "/.netlify/functions/nhl-teams";
-
-  const resp = await fetch(url);
+  // Fetch teams.json that the GitHub Action publishes to the repo root.
+  const resp = await fetch("teams.json", { cache: "no-cache" });
   if (!resp.ok) {
-    throw new Error("Proxy returned " + resp.status);
+    throw new Error("teams.json fetch failed: " + resp.status);
   }
   const data = await resp.json();
-
+  // Expect data: [{ name, abbr, pts, gf, ga }]
   return data.map(t => ({
     ...t,
     color: TEAM_COLORS[t.abbr] || "unknown"
