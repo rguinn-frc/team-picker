@@ -37,13 +37,51 @@
             >
                 Reroll +1
             </button>
+            <!-- New button to step the seed backwards by one -->
+            <button
+                id="backBtn"
+                class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded"
+            >
+                Reroll −1
+            </button>
         </div>
+        <!-- Display the Central Time range that corresponds to the current seed -->
+        <p id="hourRangeDisplay" class="text-center text-gray-400 mb-6"></p>
         <div id="matchups" class="space-y-10"></div>
+        <!-- Button for copying results and opening the Google sheet -->
+        <div class="flex justify-center mt-6">
+            <button
+                id="copyResultsBtn"
+                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded"
+            >
+                Copy Results & Open Tracker
+            </button>
+        </div>
         <div class="mt-8 text-sm text-gray-400 text-center">
             <p>
                 Note: Overpowered teams (Tampa Bay Lightning and Colorado Avalanche) are excluded from
-                selections. The higher‑rated team in each matchup is highlighted for Nick.
+                selections. The higher‑rated team in each matchup is highlighted for Nick. Select a winner
+                for each matchup and use the button above to copy your results and open the shared tracker.
             </p>
+        </div>
+
+        <!-- Scoreboard section showing total wins/losses and GCD/LCD counts for each player -->
+        <div id="scoreboardContainer" class="mt-12">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Player Standings</h2>
+            <div class="overflow-x-auto">
+                <table id="scoreboard" class="min-w-full divide-y divide-gray-700 text-center">
+                    <thead class="bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-4 py-2 text-sm font-semibold">Player</th>
+                            <th scope="col" class="px-4 py-2 text-sm font-semibold">GCDs</th>
+                            <th scope="col" class="px-4 py-2 text-sm font-semibold">LCDs</th>
+                            <th scope="col" class="px-4 py-2 text-sm font-semibold">Wins</th>
+                            <th scope="col" class="px-4 py-2 text-sm font-semibold">Losses</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700"></tbody>
+                </table>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>

@@ -1,0 +1,62 @@
+[
+  {
+    "matchup": "490509",
+    "date": "12/15/2025",
+    "Winning Team": "Los Angeles Kings",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Philadelphia Flyers",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490509",
+    "date": "12/15/2025",
+    "Winning Team": "Vegas Golden Knights",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Anaheim Ducks",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490509",
+    "date": "12/15/2025",
+    "Winning Team": "Boston Bruins",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490510",
+    "date": "12/15/2025",
+    "Winning Team": "Washington Capitals",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Pittsburgh Penguins",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490510",
+    "date": "12/15/2025",
+    "Winning Team": "Edmonton Oilers",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Florida Panthers",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "490510",
+    "date": "12/15/2025",
+    "Winning Team": "Toronto Maple Leafs",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Carolina Hurricanes",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  }
+]

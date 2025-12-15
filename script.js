@@ -51,6 +51,22 @@ const TEAM_COLORS = {
 // Filled at runtime
 let teams = [];
 
+// Global object to hold the selected winner for each matchup (keyed by game index)
+// Reset whenever new matchups are generated.
+let results = {};
+
+// Names of human players used throughout the app
+const PLAYERS = ["Tom", "Ryan", "Nick", "Dylan"];
+
+function getOpposingPlayers(nickPartner) {
+  // the 2 humans not playing as Nick+partner
+  return PLAYERS.filter(p => p !== "Nick" && p !== nickPartner);
+}
+
+// Store meta information about the currently rendered matchups. Each element
+// contains { nickTeam, otherTeam, partner } for the corresponding game index.
+let currentMatchInfo = [];
+
 //-------------------------------------------------------------
 // 1. FALLBACK LOCAL TEAM DATA
 //    (rough static snapshot; tweak as you like)
@@ -248,13 +264,24 @@ function renderMatchups(matchups, seed) {
   const container = document.getElementById("matchups");
   container.innerHTML = "";
 
+  // Reset results since we're rendering fresh matchups
+  results = {};
+  currentMatchInfo = [];
+
+  // Update the hour range display based on the provided seed
+  updateHourRangeDisplay(seed);
+
   const partners = assignPartners(seed, matchups.length);
 
   matchups.forEach((pair, index) => {
     const [t1, t2] = pair;
+    // Determine which team should be assigned to Nick (higher rating)
     const nickTeam = t1.rating >= t2.rating ? t1 : t2;
     const otherTeam = nickTeam === t1 ? t2 : t1;
     const partner = partners[index];
+
+    // Store info for later (for copy/clipboard and scoreboard)
+    currentMatchInfo[index] = { nickTeam, otherTeam, partner };
 
     const wrapper = document.createElement("div");
     const heading = document.createElement("h2");
@@ -264,9 +291,35 @@ function renderMatchups(matchups, seed) {
     const row = document.createElement("div");
     row.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch";
 
-    row.appendChild(createTeamCard(nickTeam, true, partner));
-    row.appendChild(createTeamCard(otherTeam, false, null));
-
+    // Create team cards
+    const card1 = createTeamCard(nickTeam, true, partner);
+    const card2 = createTeamCard(otherTeam, false, null);
+    // Mark cards as interactive
+    [card1, card2].forEach(card => {
+      card.classList.add("cursor-pointer", "hover:shadow-lg");
+    });
+    // Assign dataset attributes so we can highlight selected winners later
+    card1.dataset.gameIndex = index;
+    card1.dataset.teamAbbr = nickTeam.abbr;
+    card2.dataset.gameIndex = index;
+    card2.dataset.teamAbbr = otherTeam.abbr;
+    // Click handler: selecting this card as the winner
+    function handleCardClick(selectedCard, team) {
+      return () => {
+        // Record the winning team abbr for this game index
+        results[index] = team.abbr;
+        // Remove highlights from both cards
+        [card1, card2].forEach(card => {
+          card.classList.remove("ring", "ring-4", "ring-green-500");
+        });
+        // Add highlight to the selected card
+        selectedCard.classList.add("ring", "ring-4", "ring-green-500");
+      };
+    }
+    card1.addEventListener("click", handleCardClick(card1, nickTeam));
+    card2.addEventListener("click", handleCardClick(card2, otherTeam));
+    row.appendChild(card1);
+    row.appendChild(card2);
     wrapper.appendChild(heading);
     wrapper.appendChild(row);
     container.appendChild(wrapper);
@@ -284,6 +337,135 @@ function getSeed() {
   }
   // default: current hour
   return Math.floor(Date.now() / 3600000);
+}
+
+//-------------------------------------------------------------
+// 9. HOUR RANGE DISPLAY
+//-------------------------------------------------------------
+/**
+ * Compute and display the one‑hour range (Central Time) associated with a seed.
+ *
+ * The seed represents the number of hours since the UNIX epoch. We interpret
+ * it as the start of the hour in UTC, then convert to America/Chicago
+ * (Central Time) for display. The display will show the start and end of
+ * the hour (e.g., "Dec 15, 2025 3:00 PM – 4:00 PM CT").
+ *
+ * @param {number} seed
+ */
+function updateHourRangeDisplay(seed) {
+  const displayEl = document.getElementById("hourRangeDisplay");
+  if (!displayEl) return;
+  // Derive start and end times in UTC based on the seed (hours since epoch)
+  const startUtc = new Date(seed * 3600000);
+  const endUtc = new Date((seed + 1) * 3600000);
+  // Format options for Central Time
+  const opts = {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  };
+  const fmt = new Intl.DateTimeFormat("en-US", opts);
+  const startStr = fmt.format(startUtc);
+  const endStrTime = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  }).format(endUtc);
+  displayEl.textContent = `Current Seed: ${seed} → Central Time range: ${startStr} – ${endStrTime} CT`;
+}
+
+//-------------------------------------------------------------
+// 10. RESULTS AND SCOREBOARD
+//-------------------------------------------------------------
+/**
+ * Fetch the saved match results from results.json. Returns an empty array
+ * if the file cannot be loaded.
+ * @returns {Promise<Array<Object>>}
+ */
+async function loadResults() {
+  try {
+    const resp = await fetch("results.json", { cache: "no-cache" });
+    if (!resp.ok) throw new Error("results.json fetch failed");
+    const data = await resp.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.warn("Could not load results.json", err.message);
+    return [];
+  }
+}
+
+/**
+ * Compute cumulative statistics (wins, losses, GCDs, LCDs) for the human players
+ * based on the loaded results. Results are grouped by matchup to determine
+ * GCD/LCD (winning or losing all three games within a seed).
+ * @param {Array<Object>} entries
+ * @returns {Object<string, {wins:number, losses:number, gcds:number, lcds:number}>}
+ */
+function computeScoreboard(entries) {
+  const stats = {};
+  PLAYERS.forEach(p => {
+    stats[p] = { wins: 0, losses: 0, gcds: 0, lcds: 0 };
+  });
+  // Count wins and losses per entry
+  entries.forEach(entry => {
+    const winners = [entry["Winning Player 1"], entry["Winning Player 2"]].filter(Boolean);
+    const losers = [entry["Losing Player 1"], entry["Losing Player 2"]].filter(Boolean);
+    PLAYERS.forEach(p => {
+      if (winners.includes(p)) stats[p].wins += 1;
+      if (losers.includes(p)) stats[p].losses += 1;
+    });
+  });
+  // Group by matchup (seed) to compute GCD/LCD
+  const byMatchup = {};
+  entries.forEach(entry => {
+    const m = entry.matchup;
+    if (!byMatchup[m]) byMatchup[m] = [];
+    byMatchup[m].push(entry);
+  });
+  Object.values(byMatchup).forEach(group => {
+    // Expect groups of length 3 (3 games per seed) but handle arbitrary lengths
+    PLAYERS.forEach(p => {
+      // All wins across all games in this matchup
+      const winAll = group.length > 0 && group.every(e => {
+        const winners = [e["Winning Player 1"], e["Winning Player 2"]];
+        return winners.includes(p);
+      });
+      if (winAll && group.length >= 3) stats[p].gcds += 1;
+      // All losses across all games
+      const loseAll = group.length > 0 && group.every(e => {
+        const losers = [e["Losing Player 1"], e["Losing Player 2"]];
+        return losers.includes(p);
+      });
+      if (loseAll && group.length >= 3) stats[p].lcds += 1;
+    });
+  });
+  return stats;
+}
+
+/**
+ * Render the scoreboard table using the computed stats.
+ * @param {Object} stats
+ */
+function renderScoreboard(stats) {
+  const tbody = document.querySelector("#scoreboard tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  PLAYERS.forEach(p => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td class="px-4 py-2">${p}</td>
+      <td class="px-4 py-2">${stats[p].gcds}</td>
+      <td class="px-4 py-2">${stats[p].lcds}</td>
+      <td class="px-4 py-2">${stats[p].wins}</td>
+      <td class="px-4 py-2">${stats[p].losses}</td>
+    `;
+    tbody.appendChild(row);
+  });
 }
 
 //-------------------------------------------------------------
@@ -309,9 +491,13 @@ async function init() {
   const initialSeed = getSeed();
   seedInput.placeholder = initialSeed;
 
+  // Initial hour range display
+  updateHourRangeDisplay(initialSeed);
+
   document.getElementById("generateBtn").addEventListener("click", () => {
     const s = getSeed();
     renderMatchups(generateMatchups(s), s);
+    updateHourRangeDisplay(s);
   });
 
   document.getElementById("rerollBtn").addEventListener("click", () => {
@@ -319,10 +505,92 @@ async function init() {
     const next = current + 1;
     seedInput.value = next;
     renderMatchups(generateMatchups(next), next);
+    updateHourRangeDisplay(next);
   });
+
+  // Decrement seed by one when clicking the back button
+  const backBtn = document.getElementById("backBtn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      const current = getSeed();
+      const prev = current - 1;
+      seedInput.value = prev;
+      renderMatchups(generateMatchups(prev), prev);
+      updateHourRangeDisplay(prev);
+    });
+  }
+
+  // Copy results to clipboard and open Google Sheet (placeholder)
+  const copyBtn = document.getElementById("copyResultsBtn");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async () => {
+      // For each game, build a set of label-value pairs. The first column is the label, the second is the value.
+      const seedVal = getSeed();
+      // Compute the date string in Central Time (America/Chicago) for the current seed
+      const startUtc = new Date(seedVal * 3600000);
+      const dateStr = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Chicago",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(startUtc);
+      let rows = [];
+      for (let i = 0; i < currentMatchInfo.length; i++) {
+        const info = currentMatchInfo[i];
+        const winnerAbbr = results[i];
+        // Determine winning and losing teams and players
+        let winningTeam, losingTeam;
+        let winningPlayers = [], losingPlayers = [];
+        if (winnerAbbr === info.nickTeam.abbr) {
+          winningTeam = info.nickTeam.name;
+          losingTeam = info.otherTeam.name;
+          winningPlayers = ["Nick", info.partner];
+          // CPU assumed for losing team
+          losingPlayers = getOpposingPlayers(info.partner);
+        } else if (winnerAbbr === info.otherTeam.abbr) {
+          winningTeam = info.otherTeam.name;
+          losingTeam = info.nickTeam.name;
+          winningPlayers = getOpposingPlayers(info.partner);
+          losingPlayers = ["Nick", info.partner];
+        } else {
+          // if no winner selected, leave fields blank
+          winningTeam = "";
+          losingTeam = "";
+          winningPlayers = ["", ""];
+          losingPlayers = ["", ""];
+        }
+        // Append the rows for this game. Use tab separators.
+        rows.push(`matchup\t${seedVal}`);
+        rows.push(`date\t${dateStr}`);
+        rows.push(`Winning Team\t${winningTeam}`);
+        rows.push(`Winning Player 1\t${winningPlayers[0]}`);
+        rows.push(`Winning Player 2\t${winningPlayers[1]}`);
+        rows.push(`Losing Team\t${losingTeam}`);
+        rows.push(`Losing Player 1\t${losingPlayers[0]}`);
+        rows.push(`Losing Player 2\t${losingPlayers[1]}`);
+      }
+      const text = rows.join("\n");
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        console.error("Failed to copy results to clipboard", err);
+      }
+      const placeholderUrl = "https://docs.google.com/spreadsheets/d/1ZS1sG6XIYgm1bOeSSqkQ8kQRUQyzImOlMWao6Nk0YLw/edit";
+      window.open(placeholderUrl, "_blank");
+    });
+  }
 
   // initial render
   renderMatchups(generateMatchups(initialSeed), initialSeed);
+
+  // Load saved results and display the scoreboard
+  try {
+    const saved = await loadResults();
+    const stats = computeScoreboard(saved);
+    renderScoreboard(stats);
+  } catch (err) {
+    console.warn("Could not compute scoreboard", err.message);
+  }
 }
 
 window.addEventListener("DOMContentLoaded", init);
