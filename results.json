@@ -58,5 +58,35 @@
     "Losing Team": "Carolina Hurricanes",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "490511",
+    "date": "12/15/2025",
+    "Winning Team": "Vegas Golden Knights",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490511",
+    "date": "12/15/2025",
+    "Winning Team": "Toronto Maple Leafs",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Anaheim Ducks",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490511",
+    "date": "12/15/2025",
+    "Winning Team": "Anaheim Ducks",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Carolina Hurricanes",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
   }
 ]
