@@ -148,5 +148,65 @@
     "Losing Team": "Pittsburgh Penguins",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "490875",
+    "date": "12/30/2025",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490875",
+    "date": "12/30/2025",
+    "Winning Team": "Washington Capitals",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Minnesota Wild",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490875",
+    "date": "12/30/2025",
+    "Winning Team": "Ottawa Senators",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Vegas Golden Knights",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490877",
+    "date": "12/30/2025",
+    "Winning Team": "Utah Mammoth",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Philadelphia Flyers",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "490877",
+    "date": "12/30/2025",
+    "Winning Team": "Minnesota Wild",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Washington Capitals",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "490877",
+    "date": "12/30/2025",
+    "Winning Team": "Vegas Golden Knights",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Ottawa Senators",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
   }
 ]
