@@ -208,5 +208,65 @@
     "Losing Team": "Ottawa Senators",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "490924",
+    "date": "01/01/2026",
+    "Winning Team": "New York Islanders",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Ottawa Senators",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "490924",
+    "date": "01/01/2026",
+    "Winning Team": "Toronto Maple Leafs",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Montr\u00c3\u00a9al Canadiens",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "490924",
+    "date": "01/01/2026",
+    "Winning Team": "Pittsburgh Penguins",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Dallas Stars",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "490925",
+    "date": "01/01/2026",
+    "Winning Team": "New York Islanders",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Ottawa Senators",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "490925",
+    "date": "01/01/2026",
+    "Winning Team": "Toronto Maple Leafs",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Montr\u00c3\u00a9al Canadiens",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "490925",
+    "date": "01/01/2026",
+    "Winning Team": "Pittsburgh Penguins",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Dallas Stars",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
   }
 ]
