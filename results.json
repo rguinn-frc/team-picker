@@ -388,5 +388,35 @@
     "Losing Team": "Minnesota Wild",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "491258",
+    "date": "01/15/2026",
+    "Winning Team": "Boston Bruins",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "491258",
+    "date": "01/15/2026",
+    "Winning Team": "Pittsburgh Penguins",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Toronto Maple Leafs",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "491258",
+    "date": "01/15/2026",
+    "Winning Team": "Minnesota Wild",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Montr\u00c3\u00a9al Canadiens",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
   }
 ]
