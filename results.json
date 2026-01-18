@@ -418,5 +418,35 @@
     "Losing Team": "Montr\u00c3\u00a9al Canadiens",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "491321",
+    "date": "01/18/2026",
+    "Winning Team": "Buffalo Sabres",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Montr\u00c3\u00a9al Canadiens",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "491321",
+    "date": "01/18/2026",
+    "Winning Team": "Pittsburgh Penguins",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "491321",
+    "date": "01/18/2026",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Seattle Kraken",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
   }
 ]
