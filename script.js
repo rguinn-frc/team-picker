@@ -6,7 +6,7 @@ const ENABLE_LIVE_STATS = true;
 //   Later, you can switch to a backend proxy by setting this to true
 //   and updating fetchTeamStats() to hit your proxy URL.
 
-const BANNED_ABBRS = ["TBL", "COL"]; // Lightning, Avalanche
+const BANNED_ABBRS = ["TBL", "COL", "EDM", "WPG"]; // Lightning, Avalanche, Oilers, Jets
 const PARTNERS = ["Ryan", "Tom", "Dylan"]; // Nick's possible partners
 
 //-------------------------------------------------------------
@@ -66,6 +66,10 @@ function getOpposingPlayers(nickPartner) {
 // Store meta information about the currently rendered matchups. Each element
 // contains { nickTeam, otherTeam, partner } for the corresponding game index.
 let currentMatchInfo = [];
+let lastSeed = null;
+let lastMatchups = [];
+let lastPartners = [];
+let lastMirror = false;
 
 //-------------------------------------------------------------
 // 1. FALLBACK LOCAL TEAM DATA
@@ -124,21 +128,16 @@ async function fetchLiveTeamStatsViaProxy() {
 }
 
 //-------------------------------------------------------------
-// 3. RATING CALCULATION
+// 3. RATING CALCULATION (Points per Game)
 //-------------------------------------------------------------
 function computeRatings(list) {
-  const gfList = list.map(t => Number(t.gf));
-  const gaList = list.map(t => Number(t.ga));
-  const maxGF = Math.max(...gfList);
-  const minGF = Math.min(...gfList);
-  const maxGA = Math.max(...gaList);
-  const minGA = Math.min(...gaList);
-
   return list.map(t => {
-    const gfNorm = (t.gf - minGF) / (maxGF - minGF || 1);
-    const gaNorm = (maxGA - t.ga) / (maxGA - minGA || 1);
-    const rating = gfNorm * 0.6 + gaNorm * 0.4;
-    return { ...t, rating };
+    // Prefer an explicit games played field; otherwise estimate to avoid over-weighting totals
+    const gpRaw = Number(t.gp || t.gamesPlayed);
+    const estimatedGP = Math.max(1, Math.round(Number(t.pts || 0) / 2));
+    const gp = Number.isFinite(gpRaw) && gpRaw > 0 ? gpRaw : estimatedGP;
+    const ppg = gp > 0 ? Number(t.pts || 0) / gp : 0;
+    return { ...t, gp, ppg, rating: ppg };
   });
 }
 
@@ -157,9 +156,9 @@ function createLCG(seed) {
 
 //-------------------------------------------------------------
 // 5. MATCHUP GENERATOR
-//    • Top 50% as anchors
+//    • Top 75% as anchors
 //    • Filter same-color opponents
-//    • Pick random from 5 nearest by rating
+//    • Pick random from 8 nearest by rating
 //-------------------------------------------------------------
 function generateMatchups(seed) {
   const ratedAll = computeRatings(
@@ -168,8 +167,8 @@ function generateMatchups(seed) {
 
   // Sort by rating desc
   const sorted = ratedAll.slice().sort((a, b) => b.rating - a.rating);
-  const half = Math.floor(sorted.length / 2);
-  const topHalf = sorted.slice(0, half);
+  const poolCount = Math.max(1, Math.round(sorted.length * 0.75));
+  const topHalf = sorted.slice(0, poolCount);
 
   const rng = createLCG(seed);
 
@@ -182,21 +181,27 @@ function generateMatchups(seed) {
 
   const selectedAnchors = anchors.slice(0, 3);
   const matchups = [];
+  const usedAbbrs = new Set();
 
   for (const anchor of selectedAnchors) {
+    if (usedAbbrs.has(anchor.abbr)) continue;
+    usedAbbrs.add(anchor.abbr);
+
     const candidates = ratedAll
       .filter(t => t.abbr !== anchor.abbr)
       .filter(t => t.color !== anchor.color)
+      .filter(t => !usedAbbrs.has(t.abbr))
       .sort(
         (a, b) =>
           Math.abs(a.rating - anchor.rating) -
           Math.abs(b.rating - anchor.rating)
       );
 
-    const nearest = candidates.slice(0, Math.min(5, candidates.length));
+  const nearest = candidates.slice(0, Math.min(8, candidates.length));
     const opp = nearest[Math.floor(rng() * nearest.length)];
 
     if (opp) {
+      usedAbbrs.add(opp.abbr);
       matchups.push([anchor, opp]);
     }
   }
@@ -226,6 +231,7 @@ function createTeamCard(team, isNick, partner) {
          class="w-20 h-20 mb-2" onerror="this.style.display='none'">
     <h3 class="text-xl font-bold mb-1 text-center">${team.name}</h3>
     <div class="text-sm text-gray-300 flex flex-col items-center space-y-1">
+      <span><strong>PTS/G:</strong> ${(team.ppg ?? 0).toFixed(2)}</span>
       <span><strong>PTS:</strong> ${team.pts}</span>
       <span><strong>GF/G:</strong> ${team.gf.toFixed(2)}</span>
       <span><strong>GA/G:</strong> ${team.ga.toFixed(2)}</span>
@@ -241,9 +247,21 @@ function mixSeed(seed) {
   return (Math.imul(seed ^ 0x9e3779b1, 1664525) + 1013904223) >>> 0;
 }
 
+function jitterSeed(seed) {
+  // xorshift-style scramble to make adjacent seeds diverge quickly
+  let x = seed >>> 0;
+  x ^= x << 13;
+  x ^= x >>> 17;
+  x ^= x << 5;
+  x = (x + 0x9e3779b9) >>> 0;
+  return x;
+}
+
 function assignPartners(seed, count) {
-  // Use a mixed seed so nearby seeds produce different shuffles
-  const rng = createLCG(mixSeed(seed + 1337));
+  // Mix and jitter the seed to make adjacent seeds more erratic
+  const mixed = mixSeed(seed + 1337);
+  const jittered = jitterSeed(seed * 3 + 7) ^ jitterSeed(seed ^ 0x5bd1e995);
+  const rng = createLCG((mixed ^ jittered) >>> 0);
 
   // Deterministically shuffle PARTNERS with the seeded RNG (Fisher-Yates)
   const pool = [...PARTNERS];
@@ -252,15 +270,20 @@ function assignPartners(seed, count) {
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
 
+  // Apply a random rotation to further decorrelate adjacent seeds
+  const rotateBy = Math.floor(rng() * pool.length) % pool.length;
+  const rotated = pool.slice(rotateBy).concat(pool.slice(0, rotateBy));
+
   // If count > pool.length, wrap around in the shuffled order
   const picks = [];
   for (let i = 0; i < count; i++) {
-    picks.push(pool[i % pool.length]);
+    picks.push(rotated[i % rotated.length]);
   }
   return picks;
 }
 
-function renderMatchups(matchups, seed) {
+function renderMatchups(matchups, seed, options = {}) {
+  const { mirror = false, partners: partnersOverride } = options;
   const container = document.getElementById("matchups");
   container.innerHTML = "";
 
@@ -271,13 +294,15 @@ function renderMatchups(matchups, seed) {
   // Update the hour range display based on the provided seed
   updateHourRangeDisplay(seed);
 
-  const partners = assignPartners(seed, matchups.length);
+  const partners = partnersOverride || assignPartners(seed, matchups.length);
 
   matchups.forEach((pair, index) => {
     const [t1, t2] = pair;
     // Determine which team should be assigned to Nick (higher rating)
-    const nickTeam = t1.rating >= t2.rating ? t1 : t2;
-    const otherTeam = nickTeam === t1 ? t2 : t1;
+    const baseNickTeam = t1.rating >= t2.rating ? t1 : t2;
+    const baseOtherTeam = baseNickTeam === t1 ? t2 : t1;
+    const nickTeam = mirror ? baseOtherTeam : baseNickTeam;
+    const otherTeam = mirror ? baseNickTeam : baseOtherTeam;
     const partner = partners[index];
 
     // Store info for later (for copy/clipboard and scoreboard)
@@ -324,6 +349,15 @@ function renderMatchups(matchups, seed) {
     wrapper.appendChild(row);
     container.appendChild(wrapper);
   });
+
+  lastSeed = seed;
+  lastMatchups = matchups;
+  lastPartners = partners;
+  lastMirror = mirror;
+  const mirrorBtn = document.getElementById("mirrorBtn");
+  if (mirrorBtn) {
+    mirrorBtn.textContent = mirror ? "Unmirror Matchups" : "Mirror Matchups";
+  }
 }
 
 //-------------------------------------------------------------
@@ -496,7 +530,7 @@ async function init() {
 
   document.getElementById("generateBtn").addEventListener("click", () => {
     const s = getSeed();
-    renderMatchups(generateMatchups(s), s);
+    renderMatchups(generateMatchups(s), s, { mirror: false });
     updateHourRangeDisplay(s);
   });
 
@@ -504,7 +538,7 @@ async function init() {
     const current = getSeed();
     const next = current + 1;
     seedInput.value = next;
-    renderMatchups(generateMatchups(next), next);
+    renderMatchups(generateMatchups(next), next, { mirror: false });
     updateHourRangeDisplay(next);
   });
 
@@ -515,8 +549,26 @@ async function init() {
       const current = getSeed();
       const prev = current - 1;
       seedInput.value = prev;
-      renderMatchups(generateMatchups(prev), prev);
+      renderMatchups(generateMatchups(prev), prev, { mirror: false });
       updateHourRangeDisplay(prev);
+    });
+  }
+
+  // Mirror button swaps Nick's assignment with the other team for all games
+  const mirrorBtn = document.getElementById("mirrorBtn");
+  if (mirrorBtn) {
+    mirrorBtn.addEventListener("click", () => {
+      const seedForMirror = lastSeed ?? getSeed();
+      const matchupsForMirror = lastMatchups.length
+        ? lastMatchups
+        : generateMatchups(seedForMirror);
+      const partnersForMirror = lastPartners.length
+        ? lastPartners
+        : assignPartners(seedForMirror, matchupsForMirror.length);
+      renderMatchups(matchupsForMirror, seedForMirror, {
+        mirror: !lastMirror,
+        partners: partnersForMirror
+      });
     });
   }
 
@@ -581,7 +633,7 @@ async function init() {
   }
 
   // initial render
-  renderMatchups(generateMatchups(initialSeed), initialSeed);
+  renderMatchups(generateMatchups(initialSeed), initialSeed, { mirror: false });
 
   // Load saved results and display the scoreboard
   try {
