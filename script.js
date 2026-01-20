@@ -481,25 +481,252 @@ function computeScoreboard(entries) {
   return stats;
 }
 
+// Fun titles and roasts for GCD/LCD counts
+const GCD_TITLES = [
+  "", // 0
+  "Rising Star", // 1
+  "Certified Gamer", // 2
+  "Absolute Unit", // 3
+  "Hockey Deity", // 4
+  "Living Legend", // 5+
+];
+
+const LCD_TITLES = [
+  "", // 0
+  "Participation Trophy Holder", // 1
+  "Professional Button Masher", // 2
+  "The Human Zamboni", // 3
+  "Ice Cold (in a bad way)", // 4
+  "Lord of the Ls", // 5+
+];
+
+const GCD_SPOTLIGHT_MESSAGES = [
+  "👑 ALL HAIL THE CHAMPION! 👑",
+  "🔥 ABSOLUTE DOMINATION! 🔥",
+  "💪 UNSTOPPABLE FORCE! 💪",
+  "⚡ GAMING GOD ALERT! ⚡",
+  "🎮 THEY JUST BUILT DIFFERENT! 🎮"
+];
+
+const LCD_SPOTLIGHT_MESSAGES = [
+  "💀 CERTIFIED BRUH MOMENT 💀",
+  "🗑️ SOMEBODY COME GET THEM 🗑️",
+  "📉 ROCK BOTTOM ACHIEVED 📉",
+  "🤡 CLOWN OF THE DAY 🤡",
+  "😬 PRAYERS UP FOR THIS ONE 😬"
+];
+
+function getGcdTitle(count) {
+  if (count === 0) return "";
+  return GCD_TITLES[Math.min(count, GCD_TITLES.length - 1)];
+}
+
+function getLcdTitle(count) {
+  if (count === 0) return "";
+  return LCD_TITLES[Math.min(count, LCD_TITLES.length - 1)];
+}
+
+/**
+ * Find the most recent GCD or LCD from the results
+ * @param {Array<Object>} entries
+ * @returns {Object|null} { type: 'gcd'|'lcd', player: string, date: string, matchup: string }
+ */
+function findMostRecentGcdOrLcd(entries) {
+  // Group by matchup
+  const byMatchup = {};
+  entries.forEach(entry => {
+    const m = entry.matchup;
+    if (!byMatchup[m]) byMatchup[m] = [];
+    byMatchup[m].push(entry);
+  });
+
+  // Sort matchups by their numeric value (higher = more recent, assuming seed-based)
+  const sortedMatchups = Object.keys(byMatchup).sort((a, b) => parseInt(b) - parseInt(a));
+
+  for (const matchup of sortedMatchups) {
+    const group = byMatchup[matchup];
+    if (group.length < 3) continue;
+
+    const date = group[0]?.date || "Unknown";
+
+    for (const p of PLAYERS) {
+      const winAll = group.every(e => {
+        const winners = [e["Winning Player 1"], e["Winning Player 2"]];
+        return winners.includes(p);
+      });
+      if (winAll) {
+        return { type: 'gcd', player: p, date, matchup };
+      }
+    }
+
+    for (const p of PLAYERS) {
+      const loseAll = group.every(e => {
+        const losers = [e["Losing Player 1"], e["Losing Player 2"]];
+        return losers.includes(p);
+      });
+      if (loseAll) {
+        return { type: 'lcd', player: p, date, matchup };
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Render the "Most Recent GCD/LCD" spotlight section
+ * @param {Object|null} recent
+ */
+function renderRecentSpotlight(recent) {
+  const container = document.getElementById("recentSpotlight");
+  const content = document.getElementById("spotlightContent");
+  if (!container || !content) return;
+
+  if (!recent) {
+    container.classList.add("hidden");
+    return;
+  }
+
+  container.classList.remove("hidden");
+
+  const isGcd = recent.type === 'gcd';
+  const messages = isGcd ? GCD_SPOTLIGHT_MESSAGES : LCD_SPOTLIGHT_MESSAGES;
+  const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+  if (isGcd) {
+    content.className = "relative overflow-hidden rounded-xl p-6 text-center bg-gradient-to-r from-yellow-900 via-amber-800 to-yellow-900 border-4 border-yellow-500 shadow-lg shadow-yellow-500/50";
+    content.innerHTML = `
+      <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2280%22%3E👑%3C/text%3E%3C/svg%3E')] opacity-10 bg-repeat bg-center"></div>
+      <div class="relative z-10">
+        <p class="text-sm text-yellow-300 mb-2">🌟 MOST RECENT ACHIEVEMENT 🌟</p>
+        <h3 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-300 mb-2 animate-pulse">
+          ${randomMessage}
+        </h3>
+        <p class="text-2xl font-bold text-white mb-1">
+          <span class="text-yellow-400">${recent.player}</span> achieved <span class="text-yellow-300 font-black">GCD</span> status!
+        </p>
+        <p class="text-lg text-yellow-200">
+          They won ALL THREE games on ${recent.date}
+        </p>
+        <p class="text-sm text-yellow-400 mt-2">
+          🏆 Bow down to greatness. This legend fears no opponent. 🏆
+        </p>
+      </div>
+    `;
+  } else {
+    content.className = "relative overflow-hidden rounded-xl p-6 text-center bg-gradient-to-r from-red-950 via-rose-900 to-red-950 border-4 border-red-600 shadow-lg shadow-red-600/50";
+    content.innerHTML = `
+      <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2280%22%3E💀%3C/text%3E%3C/svg%3E')] opacity-10 bg-repeat bg-center"></div>
+      <div class="relative z-10">
+        <p class="text-sm text-red-300 mb-2">⚠️ SHAME ALERT ⚠️</p>
+        <h3 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-red-400 mb-2">
+          ${randomMessage}
+        </h3>
+        <p class="text-2xl font-bold text-white mb-1">
+          <span class="text-red-400">${recent.player}</span> achieved <span class="text-red-300 font-black">LCD</span> status!
+        </p>
+        <p class="text-lg text-red-200">
+          They lost ALL THREE games on ${recent.date}
+        </p>
+        <p class="text-sm text-red-400 mt-2">
+          🪦 Press F to pay respects. Maybe try a different hobby? 🪦
+        </p>
+      </div>
+    `;
+  }
+}
+
 /**
  * Render the scoreboard table using the computed stats.
  * @param {Object} stats
  */
 function renderScoreboard(stats) {
   const tbody = document.querySelector("#scoreboard tbody");
+  const legend = document.getElementById("leaderboardLegend");
   if (!tbody) return;
   tbody.innerHTML = "";
-  PLAYERS.forEach(p => {
+
+  // Sort players by GCDs (desc), then by wins (desc), then by LCDs (asc)
+  const sortedPlayers = [...PLAYERS].sort((a, b) => {
+    if (stats[b].gcds !== stats[a].gcds) return stats[b].gcds - stats[a].gcds;
+    if (stats[b].wins !== stats[a].wins) return stats[b].wins - stats[a].wins;
+    return stats[a].lcds - stats[b].lcds;
+  });
+
+  // Find max GCDs and max LCDs for highlighting
+  const maxGcds = Math.max(...PLAYERS.map(p => stats[p].gcds));
+  const maxLcds = Math.max(...PLAYERS.map(p => stats[p].lcds));
+
+  sortedPlayers.forEach((p, index) => {
     const row = document.createElement("tr");
+    const isLeader = index === 0 && stats[p].gcds > 0;
+    const hasMaxLcds = stats[p].lcds === maxLcds && maxLcds > 0;
+    const hasMaxGcds = stats[p].gcds === maxGcds && maxGcds > 0;
+
+    // Row styling based on position and achievements
+    let rowClass = "transition-all duration-300 hover:bg-gray-700";
+    if (isLeader) {
+      rowClass += " bg-gradient-to-r from-yellow-900/30 via-amber-900/20 to-yellow-900/30";
+    } else if (hasMaxLcds && !hasMaxGcds) {
+      rowClass += " bg-gradient-to-r from-red-900/20 via-rose-900/10 to-red-900/20";
+    }
+    row.className = rowClass;
+
+    // Player name with rank emoji
+    let rankEmoji = "";
+    if (index === 0 && stats[p].gcds > 0) rankEmoji = "🥇 ";
+    else if (index === 1) rankEmoji = "🥈 ";
+    else if (index === 2) rankEmoji = "🥉 ";
+
+    // GCD cell with special styling
+    let gcdContent = `<span class="text-2xl font-black">${stats[p].gcds}</span>`;
+    if (stats[p].gcds > 0) {
+      const gcdTitle = getGcdTitle(stats[p].gcds);
+      const crowns = "👑".repeat(Math.min(stats[p].gcds, 5));
+      gcdContent = `
+        <div class="flex flex-col items-center">
+          <span class="text-3xl font-black text-yellow-400">${stats[p].gcds}</span>
+          <span class="text-xs text-yellow-300">${crowns}</span>
+          ${gcdTitle ? `<span class="text-xs text-yellow-500 italic">"${gcdTitle}"</span>` : ""}
+        </div>
+      `;
+    }
+
+    // LCD cell with shame styling
+    let lcdContent = `<span class="text-2xl font-black">${stats[p].lcds}</span>`;
+    if (stats[p].lcds > 0) {
+      const lcdTitle = getLcdTitle(stats[p].lcds);
+      const skulls = "💀".repeat(Math.min(stats[p].lcds, 5));
+      lcdContent = `
+        <div class="flex flex-col items-center">
+          <span class="text-3xl font-black text-red-400">${stats[p].lcds}</span>
+          <span class="text-xs text-red-300">${skulls}</span>
+          ${lcdTitle ? `<span class="text-xs text-red-500 italic">"${lcdTitle}"</span>` : ""}
+        </div>
+      `;
+    }
+
     row.innerHTML = `
-      <td class="px-4 py-2">${p}</td>
-      <td class="px-4 py-2">${stats[p].gcds}</td>
-      <td class="px-4 py-2">${stats[p].lcds}</td>
-      <td class="px-4 py-2">${stats[p].wins}</td>
-      <td class="px-4 py-2">${stats[p].losses}</td>
+      <td class="px-6 py-4 text-lg font-bold">
+        ${rankEmoji}${p}
+        ${isLeader ? '<span class="ml-2 text-xs bg-yellow-500 text-black px-2 py-1 rounded-full">KING</span>' : ''}
+        ${hasMaxLcds && !hasMaxGcds ? '<span class="ml-2 text-xs bg-red-600 text-white px-2 py-1 rounded-full">needs help</span>' : ''}
+      </td>
+      <td class="px-6 py-4">${gcdContent}</td>
+      <td class="px-6 py-4">${lcdContent}</td>
+      <td class="px-6 py-4 text-xl font-bold text-green-400">${stats[p].wins}</td>
+      <td class="px-6 py-4 text-xl font-bold text-gray-400">${stats[p].losses}</td>
     `;
     tbody.appendChild(row);
   });
+
+  // Add legend
+  if (legend) {
+    legend.innerHTML = `
+      GCD = Greatest Common Denominator (won all 3 games) · 
+      LCD = Lowest Common Denominator (lost all 3 games... yikes)
+    `;
+  }
 }
 
 //-------------------------------------------------------------
@@ -640,6 +867,9 @@ async function init() {
     const saved = await loadResults();
     const stats = computeScoreboard(saved);
     renderScoreboard(stats);
+    // Render the most recent GCD/LCD spotlight
+    const recent = findMostRecentGcdOrLcd(saved);
+    renderRecentSpotlight(recent);
   } catch (err) {
     console.warn("Could not compute scoreboard", err.message);
   }
