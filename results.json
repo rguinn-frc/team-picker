@@ -448,5 +448,35 @@
     "Losing Team": "Seattle Kraken",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "491358",
+    "date": "01/20/2026",
+    "Winning Team": "Winnipeg Jets",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "491358",
+    "date": "01/20/2026",
+    "Winning Team": "Dallas Stars",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Vegas Golden Knights",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "491358",
+    "date": "01/20/2026",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Seattle Kraken",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
   }
 ]
