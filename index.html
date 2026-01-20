@@ -39,15 +39,13 @@
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-extrabold text-center mb-4">NHL 26 Team Randomizer</h1>
-        <p class="text-center text-gray-300 mb-6">
-            This tool will create a balanced
-            three‑game round‑robin tournament for <em>NHL 26</em>.  Use the same seed to share
-            results – by default the seed is based on the current hour in Denver (America/Denver),
-            so everyone will see the same matchups.  At the end of your three games you can crown
-            the <strong>GCD</strong> (Greatest Common Denominator) if someone wins all games or the
-            <strong>LCD</strong> (Lowest Common Denominator) if someone loses them all.
-        </p>
+        <h1 class="text-4xl font-extrabold text-center mb-4">Chel Matchups</h1>
+        <!-- Most Recent GCD/LCD Spotlight Section -->
+        <div id="recentSpotlight" class="mb-10 hidden">
+            <div id="spotlightContent" class="relative overflow-hidden rounded-xl p-6 text-center">
+                <!-- Content dynamically inserted by JS -->
+            </div>
+        </div>
         <div class="flex flex-col items-center mb-6 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-4">
             <input
                 id="seedInput"
@@ -84,13 +82,6 @@
         <!-- Display the Central Time range that corresponds to the current seed -->
         <p id="hourRangeDisplay" class="text-center text-gray-400 mb-6"></p>
 
-        <!-- Most Recent GCD/LCD Spotlight Section -->
-        <div id="recentSpotlight" class="mb-10 hidden">
-            <div id="spotlightContent" class="relative overflow-hidden rounded-xl p-6 text-center">
-                <!-- Content dynamically inserted by JS -->
-            </div>
-        </div>
-
         <div id="matchups" class="space-y-10"></div>
         <!-- Button for copying results and opening the Google sheet -->
         <div class="flex justify-center mt-6">
@@ -101,14 +92,6 @@
                 Copy Results & Open Tracker
             </button>
         </div>
-        <div class="mt-8 text-sm text-gray-400 text-center">
-            <p>
-                Note: Overpowered teams (Tampa Bay Lightning, Colorado Avalanche, Edmonton Oilers, and Winnipeg Jets) are excluded from
-                selections. The higher‑rated team in each matchup is highlighted for Nick. Select a winner
-                for each matchup and use the button above to copy your results and open the shared tracker.
-            </p>
-        </div>
-
         <!-- Scoreboard section showing total wins/losses and GCD/LCD counts for each player -->
         <div id="scoreboardContainer" class="mt-12">
             <h2 class="text-3xl font-extrabold mb-6 text-center">
@@ -137,6 +120,21 @@
                 </table>
             </div>
             <div id="leaderboardLegend" class="mt-4 text-center text-sm text-gray-500 italic"></div>
+        </div>
+        <br>
+        <p class="text-center text-gray-300 mb-6">
+            This tool will create a balanced three‑game round‑robin tournament for <em>NHL 26</em>.
+            Use the same seed to share results – by default the seed is based on the current hour in Denver (America/Denver),
+            so everyone will see the same matchups.  At the end of your three games you can crown
+            the <strong>GCD</strong> (Greatest Common Denominator) if someone wins all games or the
+            <strong>LCD</strong> (Lowest Common Denominator) if someone loses them all.
+        </p>
+        <div class="mt-8 text-sm text-gray-400 text-center">
+            <p>
+                Note: Overpowered teams (Tampa Bay Lightning, Colorado Avalanche, Edmonton Oilers, and Winnipeg Jets) are excluded from
+                selections. The higher‑rated team in each matchup is highlighted for Nick. Select a winner
+                for each matchup and use the button above to copy your results and open the shared tracker.
+            </p>
         </div>
     </div>
     <script src="script.js"></script>
