@@ -112,6 +112,8 @@ def main():
             "name": name,
             "abbr": abbr,
             "pts": row.get("points", 0),
+            "gp": row.get("gamesPlayed", 0),
+            "ppg": float(row.get("pointPct", 0.0)) * 2,
             "gf": float(row.get("goalsForPerGame", 0.0)),
             "ga": float(row.get("goalsAgainstPerGame", 0.0))
         })

@@ -132,12 +132,13 @@ async function fetchLiveTeamStatsViaProxy() {
 //-------------------------------------------------------------
 function computeRatings(list) {
   return list.map(t => {
-    // Prefer an explicit games played field; otherwise estimate to avoid over-weighting totals
-    const gpRaw = Number(t.gp || t.gamesPlayed);
-    const estimatedGP = Math.max(1, Math.round(Number(t.pts || 0) / 2));
-    const gp = Number.isFinite(gpRaw) && gpRaw > 0 ? gpRaw : estimatedGP;
-    const ppg = gp > 0 ? Number(t.pts || 0) / gp : 0;
-    return { ...t, gp, ppg, rating: ppg };
+    // Use pointPct if available; otherwise fall back to total points
+    let ppg = Number(t.ppg);
+    if (!Number.isFinite(ppg) || ppg <= 0) {
+      // Fallback: use total points as the rating metric
+      ppg = Number(t.pts || 0);
+    }
+    return { ...t, ppg, rating: ppg };
   });
 }
 
@@ -481,14 +482,27 @@ function computeScoreboard(entries) {
   return stats;
 }
 
-// Fun titles and roasts for GCD/LCD counts
 const GCD_TITLES = [
   "", // 0
   "Rising Star", // 1
   "Certified Gamer", // 2
   "Absolute Unit", // 3
   "Hockey Deity", // 4
-  "Living Legend", // 5+
+  "Living Legend", // 5
+  "Unstoppable", // 6
+  "Matchday Maestro", // 7
+  "Clutch Specialist", // 8
+  "Goal Whisperer", // 9
+  "Prime Time Player", // 10
+  "Arena Conqueror", // 11
+  "Stat Sheet Stuffer", // 12
+  "Tilt Inducer", // 13
+  "Frostbite Finisher", // 14
+  "No-Mercy MVP", // 15
+  "Perfectionist", // 16
+  "Dominance Incarnate", // 17
+  "God Mode Engaged", // 18
+  "Hockey Immortal" // 19+
 ];
 
 const LCD_TITLES = [
@@ -497,7 +511,21 @@ const LCD_TITLES = [
   "Professional Button Masher", // 2
   "The Human Zamboni", // 3
   "Ice Cold (in a bad way)", // 4
-  "Lord of the Ls", // 5+
+  "Lord of the Ls", // 5
+  "Benchwarmer Extraordinaire", // 6
+  "Perpetual Underdog", // 7
+  "Glorious Gulper of Goals", // 8
+  "Stat-Sink Specialist", // 9
+  "Hard Mode Enthusiast", // 10
+  "Rebuild Project", // 11
+  "Try-Harder", // 12
+  "Comedy Relief", // 13
+  "Dumpster Diver", // 14
+  "Lost in the Boxscore", // 15
+  "Tactical Mystery", // 16
+  "Serial Sacrifice", // 17
+  "Exhibit A", // 18
+  "Lord of Misery" // 19+
 ];
 
 const GCD_SPOTLIGHT_MESSAGES = [
@@ -505,7 +533,22 @@ const GCD_SPOTLIGHT_MESSAGES = [
   "🔥 ABSOLUTE DOMINATION! 🔥",
   "💪 UNSTOPPABLE FORCE! 💪",
   "⚡ GAMING GOD ALERT! ⚡",
-  "🎮 THEY JUST BUILT DIFFERENT! 🎮"
+  "🎮 THEY JUST BUILT DIFFERENT! 🎮",
+  "🏒 SLAYING THE ICE! 🏒",
+  "🏆 THREE-PEAT TEASED? 🏆",
+  "🌋 Eruption of Greatness 🌋",
+  "🚀 Blastoff to Glory 🚀",
+  "🎯 Clutch, Clean, Complete 🎯",
+  "✨ Sparkling Performance ✨",
+  "🛡️ Defensive Demolisher 🛡️",
+  "⚔️ Opponents Obliterated ⚔️",
+  "💥 Big Brain, Bigger Goals 💥",
+  "🥂 Champagne Behavior 🥂",
+  "🏹 Precision Predator 🏹",
+  "🔱 Crown-Worthy Display 🔱",
+  "🔮 Future Hall-of-Famer 🔮",
+  "🌟 Legendary Night Out 🌟",
+  "⚡ Electrifying Sweep ⚡"
 ];
 
 const LCD_SPOTLIGHT_MESSAGES = [
@@ -513,7 +556,22 @@ const LCD_SPOTLIGHT_MESSAGES = [
   "🗑️ SOMEBODY COME GET THEM 🗑️",
   "📉 ROCK BOTTOM ACHIEVED 📉",
   "🤡 CLOWN OF THE DAY 🤡",
-  "😬 PRAYERS UP FOR THIS ONE 😬"
+  "😬 PRAYERS UP FOR THIS ONE 😬",
+  "🍂 Falling Faster Than Leaves 🍂",
+  "🌀 Spiral of Shame 🌀",
+  "🥀 Bouquet of Sadness 🥀",
+  "🧊 Frozen in Failure 🧊",
+  "🐢 Slowpoke Shutdown 🐢",
+  "🔻 Downhill Express 🔻",
+  "🧯 Performance on Fire (in a bad way) 🧯",
+  "🪣 Bucket List: Losing 🪣",
+  "📺 Must-See Misses 📺",
+  "🎭 Tragicomedy Unfolds 🎭",
+  "🛶 Sunk Without a Paddle 🛶",
+  "🧨 Explosive Flop 🧨",
+  "🫠 Melted on Ice 🫠",
+  "🏳️ White Flag Waver 🏳️",
+  "🍕 Pizza Delivery: Ls on the House 🍕"
 ];
 
 function getGcdTitle(count) {
