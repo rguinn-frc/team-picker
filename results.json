@@ -538,5 +538,35 @@
     "Losing Team": "Dallas Stars",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "491547",
+    "date": "01/27/2026",
+    "Winning Team": "New York Islanders",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "491547",
+    "date": "01/27/2026",
+    "Winning Team": "Montr\u00c3\u00a9al Canadiens",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Buffalo Sabres",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "491547",
+    "date": "01/27/2026",
+    "Winning Team": "Dallas Stars",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Carolina Hurricanes",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
   }
 ]
