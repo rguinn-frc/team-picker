@@ -2,289 +2,289 @@
   {
     "name": "Colorado Avalanche",
     "abbr": "COL",
-    "pts": 79,
-    "gp": 50,
-    "ppg": 1.58,
-    "gf": 3.94,
-    "ga": 2.34
+    "pts": 81,
+    "gp": 54,
+    "ppg": 1.5,
+    "gf": 3.83333,
+    "ga": 2.42592
   },
   {
     "name": "Minnesota Wild",
     "abbr": "MIN",
-    "pts": 70,
-    "gp": 54,
-    "ppg": 1.29628,
-    "gf": 3.16666,
-    "ga": 2.85185
+    "pts": 76,
+    "gp": 57,
+    "ppg": 1.33332,
+    "gf": 3.26315,
+    "ga": 2.82456
   },
   {
     "name": "Tampa Bay Lightning",
     "abbr": "TBL",
-    "pts": 70,
-    "gp": 51,
-    "ppg": 1.37254,
-    "gf": 3.45098,
-    "ga": 2.5098
-  },
-  {
-    "name": "Detroit Red Wings",
-    "abbr": "DET",
-    "pts": 69,
+    "pts": 76,
     "gp": 54,
-    "ppg": 1.27776,
-    "gf": 3.07407,
-    "ga": 2.96296
-  },
-  {
-    "name": "Dallas Stars",
-    "abbr": "DAL",
-    "pts": 69,
-    "gp": 53,
-    "ppg": 1.30188,
-    "gf": 3.26415,
-    "ga": 2.71698
+    "ppg": 1.4074,
+    "gf": 3.5,
+    "ga": 2.53703
   },
   {
     "name": "Carolina Hurricanes",
     "abbr": "CAR",
-    "pts": 69,
-    "gp": 52,
-    "ppg": 1.32692,
-    "gf": 3.38461,
-    "ga": 2.82692
+    "pts": 76,
+    "gp": 56,
+    "ppg": 1.35714,
+    "gf": 3.41071,
+    "ga": 2.85714
+  },
+  {
+    "name": "Dallas Stars",
+    "abbr": "DAL",
+    "pts": 75,
+    "gp": 56,
+    "ppg": 1.33928,
+    "gf": 3.28571,
+    "ga": 2.73214
+  },
+  {
+    "name": "Detroit Red Wings",
+    "abbr": "DET",
+    "pts": 72,
+    "gp": 57,
+    "ppg": 1.26314,
+    "gf": 3.0,
+    "ga": 2.94736
   },
   {
     "name": "Montréal Canadiens",
     "abbr": "MTL",
-    "pts": 65,
-    "gp": 53,
-    "ppg": 1.2264,
-    "gf": 3.35849,
-    "ga": 3.26415
-  },
-  {
-    "name": "Boston Bruins",
-    "abbr": "BOS",
-    "pts": 65,
-    "gp": 54,
-    "ppg": 1.2037,
-    "gf": 3.29629,
-    "ga": 3.09259
+    "pts": 70,
+    "gp": 56,
+    "ppg": 1.25,
+    "gf": 3.42857,
+    "ga": 3.25
   },
   {
     "name": "Buffalo Sabres",
     "abbr": "BUF",
-    "pts": 65,
-    "gp": 52,
+    "pts": 70,
+    "gp": 56,
     "ppg": 1.25,
-    "gf": 3.38461,
-    "ga": 3.05769
+    "gf": 3.39285,
+    "ga": 3.05357
   },
   {
-    "name": "Vegas Golden Knights",
-    "abbr": "VGK",
-    "pts": 63,
-    "gp": 52,
-    "ppg": 1.21152,
-    "gf": 3.30769,
-    "ga": 3.05769
+    "name": "Boston Bruins",
+    "abbr": "BOS",
+    "pts": 68,
+    "gp": 56,
+    "ppg": 1.21428,
+    "gf": 3.375,
+    "ga": 3.125
   },
   {
     "name": "Pittsburgh Penguins",
     "abbr": "PIT",
-    "pts": 63,
-    "gp": 51,
-    "ppg": 1.23528,
-    "gf": 3.29411,
-    "ga": 2.84313
-  },
-  {
-    "name": "Edmonton Oilers",
-    "abbr": "EDM",
-    "pts": 62,
-    "gp": 54,
-    "ppg": 1.14814,
-    "gf": 3.44444,
-    "ga": 3.18518
+    "pts": 68,
+    "gp": 55,
+    "ppg": 1.23636,
+    "gf": 3.38181,
+    "ga": 2.90909
   },
   {
     "name": "New York Islanders",
     "abbr": "NYI",
-    "pts": 61,
-    "gp": 52,
-    "ppg": 1.17306,
-    "gf": 2.80769,
-    "ga": 2.71153
+    "pts": 67,
+    "gp": 57,
+    "ppg": 1.17542,
+    "gf": 2.8421,
+    "ga": 2.73684
   },
   {
-    "name": "Utah Mammoth",
-    "abbr": "UTA",
-    "pts": 60,
-    "gp": 53,
-    "ppg": 1.13206,
-    "gf": 3.15094,
-    "ga": 2.75471
+    "name": "Vegas Golden Knights",
+    "abbr": "VGK",
+    "pts": 64,
+    "gp": 55,
+    "ppg": 1.16362,
+    "gf": 3.2909,
+    "ga": 3.0909
+  },
+  {
+    "name": "Edmonton Oilers",
+    "abbr": "EDM",
+    "pts": 64,
+    "gp": 57,
+    "ppg": 1.1228,
+    "gf": 3.42105,
+    "ga": 3.2807
+  },
+  {
+    "name": "Columbus Blue Jackets",
+    "abbr": "CBJ",
+    "pts": 63,
+    "gp": 55,
+    "ppg": 1.14544,
+    "gf": 3.0909,
+    "ga": 3.2
   },
   {
     "name": "Anaheim Ducks",
     "abbr": "ANA",
-    "pts": 59,
-    "gp": 53,
-    "ppg": 1.1132,
-    "gf": 3.22641,
-    "ga": 3.54716
+    "pts": 63,
+    "gp": 56,
+    "ppg": 1.125,
+    "gf": 3.19642,
+    "ga": 3.48214
+  },
+  {
+    "name": "Washington Capitals",
+    "abbr": "WSH",
+    "pts": 63,
+    "gp": 58,
+    "ppg": 1.0862,
+    "gf": 3.17241,
+    "ga": 2.93103
+  },
+  {
+    "name": "Toronto Maple Leafs",
+    "abbr": "TOR",
+    "pts": 63,
+    "gp": 57,
+    "ppg": 1.10526,
+    "gf": 3.2807,
+    "ga": 3.38596
+  },
+  {
+    "name": "Utah Mammoth",
+    "abbr": "UTA",
+    "pts": 62,
+    "gp": 56,
+    "ppg": 1.10714,
+    "gf": 3.19642,
+    "ga": 2.78571
+  },
+  {
+    "name": "Ottawa Senators",
+    "abbr": "OTT",
+    "pts": 61,
+    "gp": 56,
+    "ppg": 1.08928,
+    "gf": 3.32142,
+    "ga": 3.26785
+  },
+  {
+    "name": "Seattle Kraken",
+    "abbr": "SEA",
+    "pts": 61,
+    "gp": 55,
+    "ppg": 1.10908,
+    "gf": 2.85454,
+    "ga": 2.8909
+  },
+  {
+    "name": "Philadelphia Flyers",
+    "abbr": "PHI",
+    "pts": 60,
+    "gp": 55,
+    "ppg": 1.0909,
+    "gf": 2.92727,
+    "ga": 3.18181
+  },
+  {
+    "name": "Los Angeles Kings",
+    "abbr": "LAK",
+    "pts": 60,
+    "gp": 54,
+    "ppg": 1.1111,
+    "gf": 2.57407,
+    "ga": 2.72222
   },
   {
     "name": "Florida Panthers",
     "abbr": "FLA",
     "pts": 59,
-    "gp": 52,
-    "ppg": 1.1346,
-    "gf": 3.01923,
-    "ga": 3.23076
-  },
-  {
-    "name": "Philadelphia Flyers",
-    "abbr": "PHI",
-    "pts": 57,
-    "gp": 51,
-    "ppg": 1.11764,
-    "gf": 2.92156,
-    "ga": 3.11764
-  },
-  {
-    "name": "Los Angeles Kings",
-    "abbr": "LAK",
-    "pts": 57,
-    "gp": 51,
-    "ppg": 1.11764,
-    "gf": 2.60784,
-    "ga": 2.70588
-  },
-  {
-    "name": "San Jose Sharks",
-    "abbr": "SJS",
-    "pts": 57,
-    "gp": 51,
-    "ppg": 1.11764,
-    "gf": 3.11764,
-    "ga": 3.43137
-  },
-  {
-    "name": "Toronto Maple Leafs",
-    "abbr": "TOR",
-    "pts": 57,
-    "gp": 53,
-    "ppg": 1.07546,
-    "gf": 3.28301,
-    "ga": 3.43396
-  },
-  {
-    "name": "Seattle Kraken",
-    "abbr": "SEA",
-    "pts": 57,
-    "gp": 52,
-    "ppg": 1.09614,
-    "gf": 2.82692,
-    "ga": 2.90384
-  },
-  {
-    "name": "Washington Capitals",
-    "abbr": "WSH",
-    "pts": 57,
-    "gp": 54,
-    "ppg": 1.05554,
-    "gf": 3.16666,
-    "ga": 2.94444
+    "gp": 55,
+    "ppg": 1.07272,
+    "gf": 3.0,
+    "ga": 3.27272
   },
   {
     "name": "New Jersey Devils",
     "abbr": "NJD",
-    "pts": 56,
-    "gp": 53,
-    "ppg": 1.0566,
-    "gf": 2.60377,
-    "ga": 3.07547
+    "pts": 58,
+    "gp": 56,
+    "ppg": 1.0357,
+    "gf": 2.53571,
+    "ga": 3.07142
   },
   {
-    "name": "Ottawa Senators",
-    "abbr": "OTT",
-    "pts": 55,
-    "gp": 52,
-    "ppg": 1.05768,
-    "gf": 3.28846,
-    "ga": 3.34615
-  },
-  {
-    "name": "Columbus Blue Jackets",
-    "abbr": "CBJ",
-    "pts": 55,
-    "gp": 51,
-    "ppg": 1.07842,
-    "gf": 3.0,
-    "ga": 3.29411
+    "name": "San Jose Sharks",
+    "abbr": "SJS",
+    "pts": 58,
+    "gp": 54,
+    "ppg": 1.07406,
+    "gf": 3.09259,
+    "ga": 3.48148
   },
   {
     "name": "Nashville Predators",
     "abbr": "NSH",
-    "pts": 53,
-    "gp": 52,
-    "ppg": 1.01922,
-    "gf": 2.82692,
-    "ga": 3.40384
+    "pts": 58,
+    "gp": 55,
+    "ppg": 1.05454,
+    "gf": 2.8909,
+    "ga": 3.41818
   },
   {
     "name": "Chicago Blackhawks",
     "abbr": "CHI",
-    "pts": 51,
-    "gp": 53,
-    "ppg": 0.96226,
-    "gf": 2.66037,
-    "ga": 3.07547
+    "pts": 53,
+    "gp": 56,
+    "ppg": 0.94642,
+    "gf": 2.69642,
+    "ga": 3.14285
+  },
+  {
+    "name": "Winnipeg Jets",
+    "abbr": "WPG",
+    "pts": 52,
+    "gp": 55,
+    "ppg": 0.94544,
+    "gf": 2.87272,
+    "ga": 3.05454
+  },
+  {
+    "name": "Calgary Flames",
+    "abbr": "CGY",
+    "pts": 50,
+    "gp": 55,
+    "ppg": 0.90908,
+    "gf": 2.47272,
+    "ga": 2.98181
   },
   {
     "name": "New York Rangers",
     "abbr": "NYR",
     "pts": 50,
-    "gp": 53,
-    "ppg": 0.94338,
-    "gf": 2.66037,
-    "ga": 3.1132
-  },
-  {
-    "name": "Winnipeg Jets",
-    "abbr": "WPG",
-    "pts": 49,
-    "gp": 52,
-    "ppg": 0.9423,
-    "gf": 2.92307,
-    "ga": 3.05769
-  },
-  {
-    "name": "Calgary Flames",
-    "abbr": "CGY",
-    "pts": 48,
-    "gp": 52,
-    "ppg": 0.92306,
-    "gf": 2.5,
-    "ga": 2.96153
+    "gp": 56,
+    "ppg": 0.89284,
+    "gf": 2.66071,
+    "ga": 3.17857
   },
   {
     "name": "St. Louis Blues",
     "abbr": "STL",
-    "pts": 47,
-    "gp": 53,
-    "ppg": 0.88678,
-    "gf": 2.43396,
-    "ga": 3.39622
+    "pts": 49,
+    "gp": 56,
+    "ppg": 0.875,
+    "gf": 2.53571,
+    "ga": 3.48214
   },
   {
     "name": "Vancouver Canucks",
     "abbr": "VAN",
-    "pts": 39,
-    "gp": 53,
-    "ppg": 0.73584,
-    "gf": 2.5849,
-    "ga": 3.67924
+    "pts": 42,
+    "gp": 56,
+    "ppg": 0.75,
+    "gf": 2.55357,
+    "ga": 3.625
   }
 ]
