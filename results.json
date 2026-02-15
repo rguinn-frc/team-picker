@@ -658,5 +658,35 @@
     "Losing Team": "Los Angeles Kings",
     "Losing Player 1": "Ryan",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "491981",
+    "date": "02/14/2026",
+    "Winning Team": "Columbus Blue Jackets",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Washington Capitals",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "491981",
+    "date": "02/14/2026",
+    "Winning Team": "Pittsburgh Penguins",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "New York Islanders",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "491981",
+    "date": "02/14/2026",
+    "Winning Team": "Toronto Maple Leafs",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Florida Panthers",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
   }
 ]
