@@ -688,5 +688,35 @@
     "Losing Team": "Florida Panthers",
     "Losing Player 1": "Ryan",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "492317",
+    "date": "02/28/2026",
+    "Winning Team": "New York Islanders",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Pittsburgh Penguins",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "492317",
+    "date": "02/28/2026",
+    "Winning Team": "Toronto Maple Leafs",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "San Jose Sharks",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "492317",
+    "date": "02/28/2026",
+    "Winning Team": "Anaheim Ducks",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Columbus Blue Jackets",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
   }
 ]
