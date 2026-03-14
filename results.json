@@ -748,5 +748,35 @@
     "Losing Team": "Utah Mammoth",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "492627",
+    "date": "03/13/2026",
+    "Winning Team": "Utah Mammoth",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Seattle Kraken",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "492627",
+    "date": "03/13/2026",
+    "Winning Team": "Dallas Stars",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "New York Islanders",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "492627",
+    "date": "03/13/2026",
+    "Winning Team": "Columbus Blue Jackets",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Minnesota Wild",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
   }
 ]
