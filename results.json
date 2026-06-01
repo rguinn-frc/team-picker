@@ -868,5 +868,35 @@
     "Losing Team": "Washington Capitals",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "494522",
+    "date": "05/31/2026",
+    "Winning Team": "Nashville Predators",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Los Angeles Kings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "494522",
+    "date": "05/31/2026",
+    "Winning Team": "Ottawa Senators",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Dallas Stars",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "494522",
+    "date": "05/31/2026",
+    "Winning Team": "Carolina Hurricanes",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Boston Bruins",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
   }
 ]
