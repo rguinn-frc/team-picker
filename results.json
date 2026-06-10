@@ -898,5 +898,35 @@
     "Losing Team": "Boston Bruins",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "494740",
+    "date": "06/09/2026",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Ottawa Senators",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "494740",
+    "date": "06/09/2026",
+    "Winning Team": "Washington Capitals",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "New York Islanders",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "494740",
+    "date": "06/09/2026",
+    "Winning Team": "Boston Bruins",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Vegas Golden Knights",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
   }
 ]
