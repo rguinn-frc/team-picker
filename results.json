@@ -928,5 +928,35 @@
     "Losing Team": "Vegas Golden Knights",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "494836",
+    "date": "06/13/2026",
+    "Winning Team": "Columbus Blue Jackets",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "New Jersey Devils",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "494836",
+    "date": "06/13/2026",
+    "Winning Team": "New York Islanders",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "494836",
+    "date": "06/13/2026",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Boston Bruins",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
   }
 ]
