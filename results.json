@@ -988,5 +988,35 @@
     "Losing Team": "San Jose Sharks",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495149",
+    "date": "06/27/2026",
+    "Winning Team": "Carolina Hurricanes",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Vegas Golden Knights",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495149",
+    "date": "06/27/2026",
+    "Winning Team": "Utah Mammoth",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Nashville Predators",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495149",
+    "date": "06/27/2026",
+    "Winning Team": "Ottawa Senators",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Pittsburgh Penguins",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
   }
 ]
