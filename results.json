@@ -1018,5 +1018,35 @@
     "Losing Team": "Pittsburgh Penguins",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "495457",
+    "date": "07/09/2026",
+    "Winning Team": "Utah Mammoth",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "495457",
+    "date": "07/09/2026",
+    "Winning Team": "Columbus Blue Jackets",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Washington Capitals",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495457",
+    "date": "07/09/2026",
+    "Winning Team": "St. Louis Blues",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Anaheim Ducks",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
   }
 ]
