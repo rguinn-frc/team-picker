@@ -317,36 +317,59 @@ function renderMatchups(matchups, seed, options = {}) {
     const row = document.createElement("div");
     row.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch";
 
-    // Create team cards
-    const card1 = createTeamCard(nickTeam, true, partner);
-    const card2 = createTeamCard(otherTeam, false, null);
-    // Mark cards as interactive
-    [card1, card2].forEach(card => {
-      card.classList.add("cursor-pointer", "hover:shadow-lg");
-    });
-    // Assign dataset attributes so we can highlight selected winners later
-    card1.dataset.gameIndex = index;
-    card1.dataset.teamAbbr = nickTeam.abbr;
-    card2.dataset.gameIndex = index;
-    card2.dataset.teamAbbr = otherTeam.abbr;
-    // Click handler: selecting this card as the winner
-    function handleCardClick(selectedCard, team) {
-      return () => {
-        // Record the winning team abbr for this game index
-        results[index] = team.abbr;
-        // Remove highlights from both cards
-        [card1, card2].forEach(card => {
-          card.classList.remove("ring", "ring-4", "ring-green-500");
-        });
-        // Add highlight to the selected card
-        selectedCard.classList.add("ring", "ring-4", "ring-green-500");
-      };
+    const swapButton = document.createElement("button");
+    swapButton.type = "button";
+    swapButton.className = "mb-4 inline-flex items-center justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500";
+    swapButton.textContent = "Swap Teams";
+
+    function applyWinnerHighlight(cardA, cardB, winnerAbbr) {
+      [cardA, cardB].forEach(card => {
+        card.classList.remove("ring", "ring-4", "ring-green-500");
+      });
+      if (!winnerAbbr) return;
+      const target = [cardA, cardB].find(card => card.dataset.teamAbbr === winnerAbbr);
+      if (target) {
+        target.classList.add("ring", "ring-4", "ring-green-500");
+      }
     }
-    card1.addEventListener("click", handleCardClick(card1, nickTeam));
-    card2.addEventListener("click", handleCardClick(card2, otherTeam));
+
+    function buildCard(team, isNick, partnerLabel) {
+      const card = createTeamCard(team, isNick, partnerLabel);
+      card.classList.add("cursor-pointer", "hover:shadow-lg");
+      card.dataset.gameIndex = index;
+      card.dataset.teamAbbr = team.abbr;
+      card.addEventListener("click", () => {
+        results[index] = team.abbr;
+        applyWinnerHighlight(card1, card2, team.abbr);
+      });
+      return card;
+    }
+
+    let card1 = buildCard(nickTeam, true, partner);
+    let card2 = buildCard(otherTeam, false, null);
+
+    swapButton.addEventListener("click", () => {
+      const selectedAbbr = results[index];
+      const currentInfo = currentMatchInfo[index];
+      currentMatchInfo[index] = {
+        nickTeam: currentInfo.otherTeam,
+        otherTeam: currentInfo.nickTeam,
+        partner: currentInfo.partner
+      };
+
+      card1 = buildCard(currentMatchInfo[index].nickTeam, true, currentMatchInfo[index].partner);
+      card2 = buildCard(currentMatchInfo[index].otherTeam, false, null);
+
+      row.innerHTML = "";
+      row.appendChild(card1);
+      row.appendChild(card2);
+      applyWinnerHighlight(card1, card2, selectedAbbr);
+    });
+
     row.appendChild(card1);
     row.appendChild(card2);
     wrapper.appendChild(heading);
+    wrapper.appendChild(swapButton);
     wrapper.appendChild(row);
     container.appendChild(wrapper);
   });
