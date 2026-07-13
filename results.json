@@ -1048,5 +1048,35 @@
     "Losing Team": "Anaheim Ducks",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "495531",
+    "date": "07/12/2026",
+    "Winning Team": "Dallas Stars",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Pittsburgh Penguins",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495531",
+    "date": "07/12/2026",
+    "Winning Team": "Vegas Golden Knights",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495531",
+    "date": "07/12/2026",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
   }
 ]
