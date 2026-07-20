@@ -1078,5 +1078,35 @@
     "Losing Team": "Detroit Red Wings",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495698",
+    "date": "07/19/2026",
+    "Winning Team": "Nashville Predators",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Anaheim Ducks",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "495698",
+    "date": "07/19/2026",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "495698",
+    "date": "07/19/2026",
+    "Winning Team": "Ottawa Senators",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Vegas Golden Knights",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
   }
 ]
