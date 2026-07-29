@@ -1108,5 +1108,35 @@
     "Losing Team": "Vegas Golden Knights",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "495915",
+    "date": "07/28/2026",
+    "Winning Team": "Boston Bruins",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Philadelphia Flyers",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "495915",
+    "date": "07/28/2026",
+    "Winning Team": "Detroit Red Wings",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Vegas Golden Knights",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "495915",
+    "date": "07/28/2026",
+    "Winning Team": "Washington Capitals",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "St. Louis Blues",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
   }
 ]
