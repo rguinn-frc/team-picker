@@ -1228,5 +1228,35 @@
     "Losing Team": "San Jose Sharks",
     "Losing Player 1": "Ryan",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "496516",
+    "date": "08/22/2026",
+    "Winning Team": "Buffalo Sabres",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Dallas Stars",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "496516",
+    "date": "08/22/2026",
+    "Winning Team": "Washington Capitals",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Los Angeles Kings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "496516",
+    "date": "08/22/2026",
+    "Winning Team": "Columbus Blue Jackets",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Nashville Predators",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
   }
 ]
