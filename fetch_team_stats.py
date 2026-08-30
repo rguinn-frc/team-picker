@@ -46,43 +46,6 @@ TEAM_ABBRS = {
     "Utah Mammoth": "UTA",
 }
 
-# Map abbr -> colour group (same as your JS)
-TEAM_COLORS = {
-    "ANA": "orange",
-    "ARI": "red",
-    "BOS": "yellow",
-    "BUF": "blue",
-    "CGY": "red",
-    "CAR": "red",
-    "CHI": "red",
-    "COL": "burgundy",
-    "CBJ": "blue",
-    "DAL": "green",
-    "DET": "red",
-    "EDM": "orange",
-    "FLA": "red",
-    "LAK": "black",
-    "MIN": "green",
-    "MTL": "red",
-    "NSH": "yellow",
-    "NJD": "red",
-    "NYI": "blue",
-    "NYR": "blue",
-    "OTT": "red",
-    "PHI": "orange",
-    "PIT": "yellow",
-    "SJS": "teal",
-    "SEA": "teal",
-    "STL": "blue",
-    "TBL": "blue",
-    "TOR": "blue",
-    "VAN": "blue",
-    "VGK": "gold",
-    "WSH": "red",
-    "WPG": "blue",
-    "UTA": "blue",
-}
-
 def fetch_team_stats():
     url = "https://api.nhle.com/stats/rest/en/team/summary"
     params = {

@@ -1258,5 +1258,65 @@
     "Losing Team": "Nashville Predators",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "496586",
+    "date": "08/25/2026",
+    "Winning Team": "Philadelphia Flyers",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Minnesota Wild",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "496586",
+    "date": "08/25/2026",
+    "Winning Team": "Anaheim Ducks",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Boston Bruins",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "496586",
+    "date": "08/25/2026",
+    "Winning Team": "Pittsburgh Penguins",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Vegas Golden Knights",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "496683",
+    "date": "08/29/2026",
+    "Winning Team": "Dallas Stars",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Buffalo Sabres",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "496683",
+    "date": "08/29/2026",
+    "Winning Team": "New Jersey Devils",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Nashville Predators",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "496683",
+    "date": "08/29/2026",
+    "Winning Team": "Montr\u00e9al Canadiens",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Boston Bruins",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
   }
 ]

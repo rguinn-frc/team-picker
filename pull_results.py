@@ -40,15 +40,18 @@ def fetch_sheet_tsv(sheet_id: str) -> List[List[str]]:
     reader = csv.reader(lines, delimiter="\t")
     return list(reader)
 
-def parse_entries(rows: List[List[str]]) -> List[Dict[str, str]]:
-    """Group rows into entries based on the 'matchup' label in the first column."""
+def parse_column_pair(rows: List[List[str]], label_col: int) -> List[Dict[str, str]]:
+    """Parse one label/value column pair (e.g. A/B is label_col=0) into entries."""
+    value_col = label_col + 1
     entries: List[Dict[str, str]] = []
     current: Dict[str, str] | None = None
     for row in rows:
-        if not row or len(row) < 2:
+        if not row or len(row) <= value_col:
             continue
-        label = row[0].strip()
-        value = row[1].strip()
+        label = row[label_col].strip()
+        value = row[value_col].strip()
+        if not label:
+            continue
         if label.lower() == "matchup":
             # Starting a new entry
             if current:
@@ -62,6 +65,21 @@ def parse_entries(rows: List[List[str]]) -> List[Dict[str, str]]:
     # append last entry
     if current:
         entries.append(current)
+    return entries
+
+
+def parse_entries(rows: List[List[str]]) -> List[Dict[str, str]]:
+    """Group rows into entries.
+
+    Results live in label/value column pairs. Historically everything was in
+    columns A/B; newer entries are appended in D/E, then G/H, and so on (each
+    new pair starts three columns over, leaving a blank spacer column). Parse
+    every such pair, left to right, and concatenate the entries in order.
+    """
+    max_cols = max((len(row) for row in rows), default=0)
+    entries: List[Dict[str, str]] = []
+    for label_col in range(0, max_cols, 3):
+        entries.extend(parse_column_pair(rows, label_col))
     return entries
 
 def main() -> None:

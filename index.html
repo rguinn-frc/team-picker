@@ -3,140 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NHL 26 Team Randomizer</title>
-    <!-- Tailwind CSS via CDN for quick styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom animations for the scoreboard */
-        @keyframes glow-gold {
-            0%, 100% { box-shadow: 0 0 5px #fbbf24, 0 0 10px #f59e0b; }
-            50% { box-shadow: 0 0 20px #fbbf24, 0 0 30px #f59e0b; }
-        }
-        @keyframes glow-red {
-            0%, 100% { box-shadow: 0 0 5px #dc2626, 0 0 10px #b91c1c; }
-            50% { box-shadow: 0 0 15px #dc2626, 0 0 25px #b91c1c; }
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-2px); }
-            75% { transform: translateX(2px); }
-        }
-        .glow-gold { animation: glow-gold 2s ease-in-out infinite; }
-        .glow-red { animation: glow-red 2s ease-in-out infinite; }
-        .shake-subtle { animation: shake 0.5s ease-in-out; }
-        
-        /* Gradient text animation */
-        @keyframes gradient-shift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .animate-gradient {
-            background-size: 200% 200%;
-            animation: gradient-shift 3s ease infinite;
-        }
-    </style>
+    <meta name="theme-color" content="#070b14">
+    <title>Chel Matchups</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏒</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&family=Rye&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-extrabold text-center mb-4">Chel Matchups</h1>
-        <!-- Most Recent GCD/LCD Spotlight Section -->
-        <div id="recentSpotlight" class="mb-10 hidden">
-            <div id="spotlightContent" class="relative overflow-hidden rounded-xl p-6 text-center">
-                <!-- Content dynamically inserted by JS -->
-            </div>
-        </div>
-        <div class="flex flex-col items-center mb-6 space-y-4 sm:space-y-0 sm:flex-row sm:space-x-4">
-            <input
-                id="seedInput"
-                type="number"
-                class="rounded px-3 py-2 text-black w-48"
-                placeholder="Enter seed (optional)"
-            />
-            <button
-                id="generateBtn"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-            >
-                Generate
-            </button>
-            <button
-                id="rerollBtn"
-                class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded"
-            >
-                Reroll +1
-            </button>
-            <!-- New button to step the seed backwards by one -->
-            <button
-                id="backBtn"
-                class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded"
-            >
-                Reroll −1
-            </button>
-            <button
-                id="mirrorBtn"
-                class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded"
-            >
-                Mirror Matchups
-            </button>
-        </div>
-        <!-- Display the Central Time range that corresponds to the current seed -->
-        <p id="hourRangeDisplay" class="text-center text-gray-400 mb-6"></p>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="appTitle"><span class="puck">🏒</span> CHEL MATCHUPS</h1>
+            <p id="tagline"></p>
+        </header>
 
-        <div id="matchups" class="space-y-10"></div>
-        <!-- Button for copying results and opening the Google sheet -->
-        <div class="flex justify-center mt-6">
-            <button
-                id="copyResultsBtn"
-                class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded"
-            >
-                Copy Results & Open Tracker
-            </button>
-        </div>
-        <!-- Scoreboard section showing total wins/losses and GCD/LCD counts for each player -->
-        <div id="scoreboardContainer" class="mt-12">
-            <h2 class="text-3xl font-extrabold mb-6 text-center">
-                <span class="bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400 bg-clip-text text-transparent">🏆 Player Standings 🏆</span>
-            </h2>
-            <div class="overflow-x-auto">
-                <table id="scoreboard" class="min-w-full text-center border-separate border-spacing-0">
-                    <thead>
-                        <tr class="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800">
-                            <th scope="col" class="px-6 py-4 text-lg font-bold border-b-2 border-yellow-500">Player</th>
-                            <th scope="col" class="px-6 py-4 text-lg font-bold border-b-2 border-yellow-500">
-                                <span class="text-yellow-400">👑 GCDs 👑</span>
-                            </th>
-                            <th scope="col" class="px-6 py-4 text-lg font-bold border-b-2 border-yellow-500">
-                                <span class="text-red-400">💀 LCDs 💀</span>
-                            </th>
-                            <th scope="col" class="px-6 py-4 text-lg font-bold border-b-2 border-yellow-500">
-                                <span class="text-green-400">✓ Wins</span>
-                            </th>
-                            <th scope="col" class="px-6 py-4 text-lg font-bold border-b-2 border-yellow-500">
-                                <span class="text-gray-400">✗ Losses</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-700"></tbody>
-                </table>
+        <!-- Daily banner: gloating for the GCD, ribbing for the LCD.
+             Same for everyone all day; new format tomorrow. -->
+        <div id="recentSpotlight"></div>
+
+        <!-- Seed / sync controls -->
+        <div class="seed-bar">
+            <p id="hourRangeDisplay"></p>
+            <p id="seedDrift" class="seed-drift"></p>
+            <div class="seed-controls">
+                <button id="backBtn" title="Previous hour's slate">◀ prev</button>
+                <button id="nowBtn" title="Jump back to the live hour">now</button>
+                <button id="rerollBtn" title="Next hour's slate">next ▶</button>
+                <button id="mirrorBtn" title="Flip which side Nick's duo plays in every game">⇆ mirror</button>
             </div>
-            <div id="leaderboardLegend" class="mt-4 text-center text-sm text-gray-500 italic"></div>
+            <details class="seed-advanced">
+                <summary>⚙ custom seed</summary>
+                <div class="seed-advanced-row">
+                    <input id="seedInput" type="number" inputmode="numeric" placeholder="Enter seed">
+                    <button id="generateBtn">Go</button>
+                </div>
+            </details>
         </div>
-        <br>
-        <p class="text-center text-gray-300 mb-6">
-            This tool will create a balanced three‑game round‑robin tournament for <em>NHL 26</em>.
-            Use the same seed to share results – by default the seed is based on the current hour in Denver (America/Denver),
-            so everyone will see the same matchups.  At the end of your three games you can crown
-            the <strong>GCD</strong> (Greatest Common Denominator) if someone wins all games or the
-            <strong>LCD</strong> (Lowest Common Denominator) if someone loses them all.
-        </p>
-        <div class="mt-8 text-sm text-gray-400 text-center">
-            <p>
-                Note: Overpowered teams (Tampa Bay Lightning, Colorado Avalanche, Edmonton Oilers, and Winnipeg Jets) are excluded from
-                selections. The higher‑rated team in each matchup is highlighted for Nick. Select a winner
-                for each matchup and use the button above to copy your results and open the shared tracker.
+
+        <!-- Tonight's slate -->
+        <h2 class="section-head">🎮 Tonight's Slate</h2>
+        <div id="matchups"></div>
+        <p class="hint">Tap a team to mark the winner · ⇄ swaps sides for one game</p>
+
+        <div class="copy-row">
+            <button id="copyResultsBtn">📋 Copy Results → The Sheet</button>
+        </div>
+
+        <!-- Standings -->
+        <h2 class="section-head">🏆 Standings</h2>
+        <div id="standings"></div>
+
+        <!-- Recent sessions -->
+        <h2 class="section-head">📜 Recent Nights</h2>
+        <div id="sessions"></div>
+
+        <footer>
+            <p id="fortune"></p>
+            <p class="fine-print">
+                Three-game 2v2 round-robin for <em>NHL 26</em>. The seed is the current hour, so the whole
+                crew sees the same slate no matter where they are. <b>GCD</b> = won all three
+                (bow down) · <b>LCD</b> = lost all three (point and laugh). OP teams
+                (TBL, COL, EDM, WPG) are banned. Nick's duo defaults to the higher-rated team —
+                that's the rules, we don't make them. The Sheet remembers everything.
             </p>
-        </div>
+        </footer>
     </div>
-    <script src="script.js"></script>
+
+    <script src="content.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
