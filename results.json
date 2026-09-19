@@ -1348,5 +1348,35 @@
     "Losing Team": "New Jersey Devils",
     "Losing Player 1": "Tom",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "497163",
+    "date": "09/18/2026",
+    "Winning Team": "Minnesota Wild",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Pittsburgh Penguins",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "497163",
+    "date": "09/18/2026",
+    "Winning Team": "Buffalo Sabres",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Ottawa Senators",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "497163",
+    "date": "09/18/2026",
+    "Winning Team": "Anaheim Ducks",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Utah Mammoth",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
   }
 ]
