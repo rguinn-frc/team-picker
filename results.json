@@ -1378,5 +1378,35 @@
     "Losing Team": "Utah Mammoth",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "497211",
+    "date": "09/20/2026",
+    "Winning Team": "Nashville Predators",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "497211",
+    "date": "09/20/2026",
+    "Winning Team": "Dallas Stars",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Boston Bruins",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "497211",
+    "date": "09/20/2026",
+    "Winning Team": "Anaheim Ducks",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Los Angeles Kings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
   }
 ]
