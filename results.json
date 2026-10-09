@@ -1408,5 +1408,35 @@
     "Losing Team": "Los Angeles Kings",
     "Losing Player 1": "Nick",
     "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "497642",
+    "date": "10/08/2026",
+    "Winning Team": "Ottawa Senators",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Dallas Stars",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "497642",
+    "date": "10/08/2026",
+    "Winning Team": "Los Angeles Kings",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Nashville Predators",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "497642",
+    "date": "10/08/2026",
+    "Winning Team": "Minnesota Wild",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Buffalo Sabres",
+    "Losing Player 1": "Tom",
+    "Losing Player 2": "Dylan"
   }
 ]
