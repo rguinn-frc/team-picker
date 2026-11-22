@@ -1207,3 +1207,91 @@ body.forbidden-font * {
 }
 #nextBirthday b { color: #c4b5fd; }
 #nextBirthday span { color: #5f5785; }
+
+/* ------------------------------------------------------------
+   PERSONAS — per-player standings touches
+   ------------------------------------------------------------ */
+.pc-badge.premium {
+  background: linear-gradient(110deg, #b45309 0%, #fde68a 40%, #fff7d6 50%, #fde68a 60%, #b45309 100%);
+  background-size: 250% 100%;
+  color: #3b2402;
+  animation: premium-shine 3s linear infinite;
+}
+@keyframes premium-shine { to { background-position: -250% 0; } }
+.pc-badge.mirror {
+  background: rgba(244, 114, 182, 0.14);
+  border: 1px dashed rgba(244, 114, 182, 0.55);
+  color: #f9a8d4;
+}
+.pc-stat .asterisk {
+  color: #94a3b8;
+  font-size: 0.6em;
+  margin-left: 1px;
+}
+.pc-quirk {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+  border-left: 3px solid var(--player-color, var(--line));
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: #b9c5dd;
+}
+
+.fine-print-strip {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 0.68rem;
+  color: #7c8aa8;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+.sess-runback {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  background: rgba(52, 211, 153, 0.08);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+/* ------------------------------------------------------------
+   DROUGHT SIGN — workplace safety counter
+   ------------------------------------------------------------ */
+#droughtSign:empty { display: none; }
+.drought-sign {
+  margin: 0 auto 8px;
+  max-width: 340px;
+  padding: 10px;
+  text-align: center;
+  color: #111;
+  background: #facc15;
+  border-radius: 8px;
+  border: 8px solid transparent;
+  border-image: repeating-linear-gradient(-45deg, #111 0 10px, #facc15 10px 20px) 8;
+  font-family: var(--font-display);
+  transform: rotate(-1.2deg);
+}
+.ds-top, .ds-bottom { font-size: 1.15rem; letter-spacing: 0.12em; line-height: 1.1; }
+.ds-count { margin: 6px 0; }
+.ds-count span {
+  display: inline-block;
+  min-width: 2.2ch;
+  padding: 2px 12px;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: #ef4444;
+  background: #111;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.ds-blame {
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+}

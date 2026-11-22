@@ -16,6 +16,7 @@ const SHEET_URL = "https://docs.google.com/spreadsheets/d/1ZS1sG6XIYgm1bOeSSqkQ8
 
 // Runtime state
 let teams = [];
+let allTeams = [];             // unfiltered (incl. banned) — for rating old results
 let results = {};              // selected winner per game index
 let currentMatchInfo = [];
 let lastSeed = null;
@@ -485,6 +486,54 @@ function computeExtras(entries) {
   return extras;
 }
 
+// Personality stats pulled from the Sheet. "Better team" uses current
+// team ratings (end-of-season points pace), which is close enough to
+// how the slate assigned teams at the time.
+function computePersonaStats(entries) {
+  const rating = Object.fromEntries(computeRatings(allTeams).map(t => [t.name, t.rating]));
+  const sessions = buildSessions(entries);
+  const per = {};
+  PLAYERS.forEach(p => per[p] = { rated: 0, betterTeam: 0, lostWithBetter: 0, wonWithWorse: 0 });
+
+  entries.forEach(e => {
+    const wr = rating[e["Winning Team"]], lr = rating[e["Losing Team"]];
+    if (wr == null || lr == null || wr === lr) return;
+    PLAYERS.forEach(p => {
+      const won = wonGame(e, p), lost = lostGame(e, p);
+      if (!won && !lost) return;
+      const mine = won ? wr : lr, theirs = won ? lr : wr;
+      per[p].rated++;
+      if (mine > theirs) per[p].betterTeam++;
+      if (lost && mine > theirs) per[p].lostWithBetter++;
+      if (won && mine < theirs) per[p].wonWithWorse++;
+    });
+  });
+
+  // Nick's asterisk: GCDs where his side had the better team in every game
+  const nickGcds = sessions.filter(s => sweptAll(s, "Nick"));
+  const nickAllBetter = nickGcds.filter(s =>
+    s.games.every(e => (rating[e["Winning Team"]] ?? 0) > (rating[e["Losing Team"]] ?? 0))
+  ).length;
+
+  // Nights, run-it-backs, and how long since anyone last played
+  const byDate = {};
+  sessions.forEach(s => { if (s.date) (byDate[s.date] ||= []).push(s); });
+  const dates = Object.keys(byDate);
+  const runBackDates = dates.filter(d => byDate[d].length > 1)
+    .sort((a, b) => parseEntryDate(a) - parseEntryDate(b));
+  const lastDate = dates.slice().sort((a, b) => parseEntryDate(b) - parseEntryDate(a))[0] || null;
+
+  return {
+    per,
+    nickGcdCount: nickGcds.length,
+    nickAllBetter,
+    nights: dates.length,
+    runBackNights: runBackDates.length,
+    lastRunBack: runBackDates[runBackDates.length - 1] || null,
+    daysSinceLastSession: lastDate ? daysAgo(lastDate) : null
+  };
+}
+
 function getGcdTitle(count) {
   if (count === 0) return "";
   return GCD_TITLES[Math.min(count, GCD_TITLES.length - 1)];
@@ -529,6 +578,7 @@ function findMostRecentGcdOrLcd(entries) {
       player: primaryType === "gcd" ? gcdPlayer : lcdPlayer,
       date,
       matchup: session.key,
+      games: session.games,
       alsoLcd: primaryType === "gcd" ? nightLcd : null,
       alsoGcdPlayer: primaryType === "lcd" ? nightGcd : null
     };
@@ -544,15 +594,22 @@ function findMostRecentGcdOrLcd(entries) {
 //=============================================================
 const BANNER_TEMPLATES = ["jumbotron", "gazette", "wanted", "breaking", "certificate", "movie"];
 
+// Generic pool plus the player's own bits at double weight.
+function withPersona(generic, player, key) {
+  const own = (PERSONAS[player] && PERSONAS[player][key]) || [];
+  return generic.concat(own, own);
+}
+
 function buildBannerContext(recent, stats) {
   const isGcd = recent.type === "gcd";
   const rng = dailyRng("banner|" + recent.matchup + "|" + recent.player + "|" + recent.type);
+  const who = recent.player;
 
   const headline = pick(rng, isGcd ? GCD_HEADLINES : LCD_HEADLINES);
-  const epithet = pick(rng, isGcd ? GCD_EPITHETS : LCD_EPITHETS);
+  const epithet = pick(rng, withPersona(isGcd ? GCD_EPITHETS : LCD_EPITHETS, who, isGcd ? "gcdEpithets" : "lcdEpithets"));
   const rank = pick(rng, FLOURISH_RANKS);
   const object = pick(rng, isGcd ? GCD_FLOURISH_OBJECTS : LCD_FLOURISH_OBJECTS);
-  const subline = pick(rng, isGcd ? GCD_SUBLINES : LCD_SUBLINES);
+  const subline = pick(rng, withPersona(isGcd ? GCD_SUBLINES : LCD_SUBLINES, who, isGcd ? "gcdSublines" : "lcdSublines"));
   const template = BANNER_TEMPLATES[Math.floor(rng() * BANNER_TEMPLATES.length)];
 
   const count = isGcd ? stats[recent.player].gcds : stats[recent.player].lcds;
@@ -579,13 +636,16 @@ function buildBannerContext(recent, stats) {
 
 function tickerLine(rng, player) {
   const others = PLAYERS.filter(p => p !== player);
+  // generic items (with a random other player) + every player's personal headlines
+  const pool = TICKER_ITEMS.map(t => () => t.replace("{p}", others[Math.floor(rng() * others.length)].toUpperCase()))
+    .concat(PLAYERS.flatMap(p => ((PERSONAS[p] && PERSONAS[p].ticker) || []).map(t => () => t)));
   const items = [];
   const used = new Set();
-  while (items.length < 4 && used.size < TICKER_ITEMS.length) {
-    const idx = Math.floor(rng() * TICKER_ITEMS.length);
+  while (items.length < 4 && used.size < pool.length) {
+    const idx = Math.floor(rng() * pool.length);
     if (used.has(idx)) continue;
     used.add(idx);
-    items.push(TICKER_ITEMS[idx].replace("{p}", others[Math.floor(rng() * others.length)].toUpperCase()));
+    items.push(pool[idx]());
   }
   return items.join("  ★  ");
 }
@@ -729,6 +789,12 @@ function renderBanner(recent, stats) {
       </div>`;
   }
 
+  if (ctx.isGcd && recent.player === "Nick" && recent.games) {
+    const rating = Object.fromEntries(computeRatings(allTeams).map(t => [t.name, t.rating]));
+    const better = recent.games.filter(e => (rating[e["Winning Team"]] ?? 0) > (rating[e["Losing Team"]] ?? 0)).length;
+    html += `<div class="fine-print-strip">*Fine print: Nick had the better team in ${better} of ${recent.games.length} games. A football game was also on.</div>`;
+  }
+
   if (ctx.meanwhile) {
     html += `<div class="meanwhile-strip">${ctx.meanwhile}</div>`;
   }
@@ -749,7 +815,40 @@ function renderBanner(recent, stats) {
 // big rank numbers, throne-to-rock-bottom labels, and a
 // "distance to the player above you" line on every card.
 //-------------------------------------------------------------
-function renderStandings(stats, extras) {
+// One personality touch per player card — each a different kind of gag.
+function personaBits(p, index, persona, s) {
+  const out = { badge: "", quirk: "", gcdSuffix: "" };
+  if (!persona) return out;
+  const me = persona.per[p];
+  const pct = (n, d) => d ? Math.round((n / d) * 100) : 0;
+
+  if (p === "Tom") {
+    out.badge = '<span class="pc-badge premium" title="Allegedly pay-to-win (source: Dylan)">💳 PREMIUM EDITION</span>';
+    out.quirk = `💳 Dylan maintains the premium edition explains all ${s.wins} of Tom's wins, every lucky poke check, and why the puck never leaves his stick.`;
+  }
+  if (p === "Ryan") {
+    out.badge = index === 0
+      ? '<span class="pc-badge mirror">🪞 "as I predicted"</span>'
+      : '<span class="pc-badge mirror">🪞 self-ranked #1</span>';
+    out.quirk = `🍀 "Bad luck" report: lost ${me.lostWithBetter} of ${me.betterTeam} games with the better team (${pct(me.lostWithBetter, me.betterTeam)}%).`;
+  }
+  if (p === "Nick" && persona.nickGcdCount > 0) {
+    const others = PLAYERS.filter(x => x !== "Nick");
+    const othersPct = Math.round(others.reduce((s, x) => s + pct(persona.per[x].betterTeam, persona.per[x].rated), 0) / others.length);
+    out.gcdSuffix = '<sup class="asterisk">*</sup>';
+    out.quirk = `📺 *${persona.nickAllBetter} of ${persona.nickGcdCount} GCDs came with the better team in all three games. Better team in ${pct(me.betterTeam, me.rated)}% of games (everyone else: ~${othersPct}%). Football was probably on.`;
+  }
+  if (p === "Dylan") {
+    const mostUpsets = PLAYERS.every(x => persona.per[x].wonWithWorse <= me.wonWithWorse);
+    const runBack = persona.lastRunBack
+      ? `the crew has run it back on ${persona.runBackNights} of ${persona.nights} nights (last: ${persona.lastRunBack}). He'd rather be home.`
+      : `the crew has never run it back. He'd rather be home.`;
+    out.quirk = `🧠 ${me.wonWithWorse} wins with the worse team${mostUpsets ? " (most in the crew)" : ""}; he knows every player's zone abilities. 🔁 Meanwhile, ${runBack}`;
+  }
+  return out;
+}
+
+function renderStandings(stats, extras, persona) {
   const container = document.getElementById("standings");
   if (!container) return;
 
@@ -822,6 +921,7 @@ function renderStandings(stats, extras) {
     card.style.setProperty("--player-color", flavor.color);
     card.dataset.player = p;
     const isBirthday = birthdayPlayersToday().includes(p);
+    const bits = personaBits(p, index, persona, s);
     card.innerHTML = `
       <div class="pc-rankcol">
         <div class="pc-ranknum">${index + 1}</div>
@@ -834,6 +934,7 @@ function renderStandings(stats, extras) {
           ${isBirthday ? '<span class="pc-badge bday">🎂 BIRTHDAY</span>' : ""}
           ${isLeader ? '<span class="pc-badge king">👑 KING</span>' : ""}
           ${hasMaxLcds && !isLeader ? '<span class="pc-badge help">🆘 needs help</span>' : ""}
+          ${bits.badge}
           ${streakBit}
         </div>
         <div class="pc-gap">${gapLine}</div>
@@ -843,7 +944,7 @@ function renderStandings(stats, extras) {
         </div>
         <div class="pc-stats">
           <div class="pc-stat gcd">
-            <div class="num">${s.gcds}</div><div class="lbl">GCD</div>
+            <div class="num">${s.gcds}${bits.gcdSuffix}</div><div class="lbl">GCD</div>
             ${crowns ? `<div class="stack">${crowns}</div>` : ""}
           </div>
           <div class="pc-stat lcd">
@@ -857,6 +958,7 @@ function renderStandings(stats, extras) {
           <div class="pc-bar-fill" style="width:${winPct}%"></div>
           <span class="pc-bar-label">${winPct}% win rate</span>
         </div>
+        ${bits.quirk ? `<div class="pc-quirk">${bits.quirk}</div>` : ""}
         ${droughtBits.length ? `<div class="pc-drought">${droughtBits.join(" · ")}</div>` : ""}
         <div class="pc-next" title="What's at stake">
           next GCD ⇒ “${getGcdTitle(s.gcds + 1)}” · next LCD ⇒ “${getLcdTitle(s.lcds + 1)}”
@@ -893,9 +995,18 @@ function renderSessions(entries) {
 
   if (!recent.length) { container.innerHTML = ""; return; }
 
+  // A session is a "run it back" if an earlier session happened the same night
+  const seenPerNight = {};
+  const nightIndex = new Map();
+  buildSessions(entries).forEach(s => {
+    seenPerNight[s.date] = (seenPerNight[s.date] || 0) + 1;
+    nightIndex.set(s.key, seenPerNight[s.date]);
+  });
+
   container.innerHTML = recent.map(session => {
     const group = session.games;
     const date = session.date || "?";
+    const runBack = (nightIndex.get(session.key) || 1) > 1;
     const chips = PLAYERS.map(p => {
       const wins = group.filter(e => wonGame(e, p)).length;
       const losses = group.filter(e => lostGame(e, p)).length;
@@ -916,11 +1027,32 @@ function renderSessions(entries) {
       <details class="session">
         <summary>
           <span class="sess-date">${date}</span>
+          ${runBack ? '<span class="sess-runback" title="A second session the same night. Rare. Thank Dylan.">🔁 RAN IT BACK</span>' : ""}
           <span class="sess-chips">${chips}</span>
         </summary>
         <div class="sess-detail">${games}</div>
       </details>`;
   }).join("");
+}
+
+//-------------------------------------------------------------
+// DROUGHT SIGN — workplace-safety style "days without chel"
+// counter once the crew goes 3+ days without a session.
+//-------------------------------------------------------------
+function renderDroughtSign(persona) {
+  const el = document.getElementById("droughtSign");
+  if (!el) return;
+  const days = persona ? persona.daysSinceLastSession : null;
+  const level = days === null ? null : DROUGHT_LEVELS.find(l => days >= l.min);
+  if (!level) { el.innerHTML = ""; return; }
+  const line = pick(dailyRng("drought|" + level.min), level.lines);
+  el.innerHTML = `
+    <div class="drought-sign">
+      <div class="ds-top">THIS CREW HAS GONE</div>
+      <div class="ds-count"><span>${days}</span></div>
+      <div class="ds-bottom">DAYS WITHOUT CHEL</div>
+      <div class="ds-blame">${line}</div>
+    </div>`;
 }
 
 //-------------------------------------------------------------
@@ -934,7 +1066,7 @@ function renderDailyFlavor() {
   if (fortuneEl) {
     const rng = dailyRng("fortune");
     const player = pick(rng, PLAYERS);
-    const text = pick(rng, FORTUNES).replace("{p}", player);
+    const text = pick(rng, withPersona(FORTUNES, player, "fortunes")).replace("{p}", player);
     const month = new Date().getMonth();
     fortuneEl.innerHTML = `<span class="fortune-eye">🔮</span> ${text} <span class="fortune-garnish">${MONTH_GARNISH[month] || ""}</span>`;
   }
@@ -986,8 +1118,10 @@ function renderBirthday(stats) {
       .replace(/\{lcds\}/g, s.lcds)
       .replace(/\{title\}/g, getGcdTitle(s.gcds) || "Untitled");
     const headline = fill(pick(rng, BIRTHDAY_HEADLINES));
-    const line = fill(pick(rng, BIRTHDAY_LINES));
-    const wish = fill(pick(rng, BIRTHDAY_WISHES));
+    // The birthday card is personal: use the player's own bits when they have them.
+    const own = PERSONAS[p] || {};
+    const line = fill(pick(rng, own.birthdayLines?.length ? own.birthdayLines : BIRTHDAY_LINES));
+    const wish = fill(pick(rng, own.birthdayWishes?.length ? own.birthdayWishes : BIRTHDAY_WISHES));
     const candleCount = Math.max(1, Math.min(s.gcds, 12));
 
     const balloons = ["🎈", "🎈", "🎉", "🎈", "🎊", "🎈"].map((b, i) =>
@@ -1225,6 +1359,7 @@ async function init() {
     console.warn("Using fallback team data:", err.message);
     teams = FALLBACK_TEAMS.slice();
   }
+  allTeams = teams.slice();
   teams = teams.filter(t => !BANNED_ABBRS.includes(t.abbr));
 
   const seedInput = document.getElementById("seedInput");
@@ -1274,7 +1409,9 @@ async function init() {
     const stats = computeScoreboard(saved);
     const extras = computeExtras(saved);
     renderBirthday(stats);
-    renderStandings(stats, extras);
+    const persona = computePersonaStats(saved);
+    renderStandings(stats, extras, persona);
+    renderDroughtSign(persona);
     renderSessions(saved);
     const recent = findMostRecentGcdOrLcd(saved);
     renderBanner(recent, stats);

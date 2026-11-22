@@ -354,6 +354,186 @@ const FORTUNES = [
 ];
 
 //-------------------------------------------------------------
+// PERSONAS — each player's running bits. These get mixed (at
+// extra weight) into that player's banners, fortunes, ticker and
+// birthday card, so the ribbing actually fits the person.
+//   Tom:   owns the "premium edition" (Dylan insists it's pay-to-win)
+//   Ryan:  believes he's the best; perpetually "unlucky"
+//   Nick:  always distracted (usually football), so he gets the
+//          better team by rule — his GCDs come with an asterisk
+//   Dylan: nearly impossible to get online, never runs it back,
+//          prefers home; knows every player's ratings and abilities
+//-------------------------------------------------------------
+const PERSONAS = {
+  Tom: {
+    gcdEpithets: ["Premium Edition", "The Pay-to-Win Prince", "The Microtransaction", "Deluxe Tom", "The Season Pass"],
+    lcdEpithets: ["The Refund Request", "Premium Edition (Expired)", "The Free Trial"],
+    gcdSublines: [
+      "Dylan has filed a formal complaint: \"It's the premium edition. The puck physically cannot leave his stick.\"",
+      "Every poke check connected. Dylan says that's a premium edition feature. Dylan may be right.",
+      "Unlocked with the premium edition's exclusive Sweep DLC (allegedly)."
+    ],
+    lcdSublines: [
+      "Lost all three on the premium edition. Dylan is requesting a full investigation into how that's even possible.",
+      "Turns out the premium edition doesn't include a refund for this."
+    ],
+    fortunes: [
+      "The Oracle sees a lucky poke check in Tom's future. Dylan sees the premium edition.",
+      "The Oracle predicts Dylan will mention the premium edition within ten minutes of puck drop."
+    ],
+    ticker: [
+      "DYLAN: 'IT'S THE PREMIUM EDITION' (847TH REPORTED INSTANCE)",
+      "EA DENIES TOM'S PREMIUM EDITION INCLUDES 'PUCK MAGNET' PERK",
+      "TOM'S POKE CHECK SUCCESS RATE UNDER LEAGUE REVIEW"
+    ],
+    birthdayLines: [
+      "Another year older, and the premium edition is still doing all the work (source: Dylan).",
+      "Dylan's gift to Tom: a strongly worded letter about pay-to-win mechanics.",
+      "Happy birthday to the only man whose poke checks come with a receipt.",
+      "Celebrating {gcds} career GCDs, every one of them premium-edition-assisted (according to Dylan)."
+    ],
+    birthdayWishes: [
+      "Wish granted: a free upgrade to the Premium Premium Edition. Dylan has already filed a complaint.",
+      "Wish granted: the puck will stick to your blade tonight. Dylan says it always does.",
+      "Wish granted: one lucky poke check per period, as the premium edition intends."
+    ]
+  },
+
+  Ryan: {
+    gcdEpithets: ["The Self-Proclaimed", "Mr. Told You So", "The Rightful King (His Words)", "The Self-Appointed GOAT"],
+    lcdEpithets: ["The Unlucky (Allegedly)", "Mr. Bad Bounce", "Captain Posts", "The Self-Proclaimed GOAT"],
+    gcdSublines: [
+      "Ryan would like everyone to know he's been saying this the whole time.",
+      "For once the bounces went his way. He considers this the natural order restored.",
+      "He'd like the record to show this was always the expected outcome."
+    ],
+    lcdSublines: [
+      "Ryan blames the bounces. The bounces have hired a lawyer.",
+      "Self-reported skill level: elite. Sheet-reported results: see above.",
+      "Three posts, two deflections and one \"are you KIDDING me.\" Allegedly unlucky.",
+      "The best player in the group (source: Ryan) went 0-3."
+    ],
+    fortunes: [
+      "The Oracle foresees Ryan hitting two posts and blaming the game engine.",
+      "The Oracle sees a fluke deflection in Ryan's future. Against him, obviously.",
+      "Ryan will claim he's the best player in the room. The Oracle declines to comment."
+    ],
+    ticker: [
+      "RYAN FILES FORMAL COMPLAINT AGAINST GOAL POSTS",
+      "RYAN: 'I'M STILL THE BEST.' SHEET: NO COMMENT",
+      "PHYSICISTS STUDY RYAN'S DEFLECTION LUCK; SEVERAL CAREERS RUINED"
+    ],
+    birthdayLines: [
+      "Happy birthday to the best player in the group (according to the birthday boy).",
+      "Another year of being robbed by the bounces. Happy birthday, Ryan.",
+      "Ryan is one year older and still convinced he's the best. Nobody has the heart to show him the Sheet."
+    ],
+    birthdayWishes: [
+      "Wish granted: the bounces will go your way tonight. (Offer not valid in any game.)",
+      "Wish denied: the RNG remembers everything.",
+      "Wish granted: everyone will agree you're the best. For the next eleven seconds."
+    ]
+  },
+
+  Nick: {
+    gcdEpithets: ["The Asterisk", "Second Screen Sniper", "The Favorite (By Rule)", "The Handicap Champion"],
+    lcdEpithets: ["The Distracted", "Commercial Break", "Red Zone Refugee", "Two-Screen Tragedy"],
+    gcdSublines: [
+      "Achieved with the better team, as the rules intend. Asterisk applied.",
+      "Played all three games with one eye on the football game. Still swept. Rude.",
+      "The handicap system worked perfectly. Maybe too perfectly.",
+      "Sources confirm the football game was on mute. That was the difference."
+    ],
+    lcdSublines: [
+      "Had the better team. Had a football game on. Chose the football game.",
+      "Losing with the stronger roster takes a special kind of multitasking.",
+      "Fantasy lineup: set. Hockey lineup: forgotten.",
+      "The rules gave him the better team. The rules can only do so much."
+    ],
+    fortunes: [
+      "The Oracle sees Nick checking a football score mid-power play.",
+      "Nick will get the better team tonight. The Oracle is 100% sure. It's literally the rules.",
+      "The Oracle predicts a third-down conversion will cost Nick a goal against."
+    ],
+    ticker: [
+      "NICK ASKS 'WAIT, WHAT HAPPENED?' FOR FOURTH TIME THIS PERIOD",
+      "FOOTBALL GAME HITS TWO-MINUTE WARNING; NICK'S DEFENSE TAKES TWO-MINUTE NAP",
+      "LEAGUE OFFICE REVIEWS NICK'S GCDS, ADDS ASTERISKS"
+    ],
+    birthdayLines: [
+      "Gift idea for Nick: a TV that only shows hockey.",
+      "Today Nick gets the better team AND cake. As is tradition.",
+      "Happy birthday, Nick. Please put your phone down for the candles."
+    ],
+    birthdayWishes: [
+      "Wish granted: no football on tonight. (Wish revoked: there is football on tonight.)",
+      "Wish granted: the better team, as always. Happy birthday.",
+      "Wish granted: full attention for one entire period."
+    ]
+  },
+
+  Dylan: {
+    gcdEpithets: ["The Scout", "The X-Factor Encyclopedia", "The Rare Sighting", "One and Done"],
+    lcdEpithets: ["The Homebody", "One and Done", "The Hermit", "The Couch Loyalist"],
+    gcdSublines: [
+      "He knew every player's zone ability before puck drop. Of course he did.",
+      "Swept it, logged off. He will not be running it back.",
+      "A rare sighting AND a sweep. Mark your calendars, he won't be back for a while.",
+      "Won with the scouting report, not the roster."
+    ],
+    lcdSublines: [
+      "Finally showed up and this happened. See you in three weeks, probably.",
+      "Knew every player's X-Factor. Didn't help.",
+      "He'd rather be home. Based on this, he should have stayed there.",
+      "Lost all three, logged off instantly. No run it back. Never a run it back."
+    ],
+    fortunes: [
+      "The Oracle sees Dylan saying \"just one.\" The Oracle believes him.",
+      "The Oracle predicts Dylan already knows tonight's goalies' save percentages.",
+      "Dylan will be home tonight. Dylan is always home.",
+      "The Oracle has a vision of a run it back. Wait, no. Dylan logged off."
+    ],
+    ticker: [
+      "DYLAN SPOTTED AT HOME; EXPERTS CALL IT 'EXTREMELY ON BRAND'",
+      "'RUN IT BACK?' DYLAN HAS LOGGED OFF",
+      "DYLAN CITES SPEED RATINGS IN PREGAME SPEECH; NOBODY ASKED",
+      "SEARCH PARTY FOR DYLAN CALLED OFF: HE WAS HOME"
+    ],
+    birthdayLines: [
+      "Dylan's birthday plans: home. Obviously.",
+      "Birthday wish: one session, then bed. Run it back? Not even today.",
+      "Gift idea for Dylan: a second session. He will return it."
+    ],
+    birthdayWishes: [
+      "Wish granted: you never have to leave the house again. (You already don't.)",
+      "Wish granted: one game. Exactly one. No run it back.",
+      "Wish granted: every opponent's X-Factor, memorized. As usual."
+    ]
+  }
+};
+
+// "Days without chel" sign — shows once the crew has gone 3+ days
+// without a session. Dylan gets the blame, as is tradition.
+const DROUGHT_LEVELS = [
+  { min: 30, lines: [
+    "A full month. The Sheet is gathering dust. This is Dylan's legacy.",
+    "The ice has melted. Historians will blame Dylan's couch."
+  ] },
+  { min: 14, lines: [
+    "Two weeks. The ice is getting soft. Somebody text Dylan.",
+    "Fourteen days. Dylan's couch has filed for a restraining order on the controller."
+  ] },
+  { min: 7, lines: [
+    "A whole week. Search party assembled. Dylan last seen on his couch.",
+    "Seven days. Dylan says he's \"busy.\" Dylan is home."
+  ] },
+  { min: 3, lines: [
+    "Dylan is home. Dylan is always home.",
+    "Nobody has played in days. Everyone knows why. (Dylan.)"
+  ] }
+];
+
+//-------------------------------------------------------------
 // BIRTHDAYS (MM/DD, Central Time). On the day: a cake card with
 // one candle per GCD to blow out, a party hat in the standings,
 // and a countdown in the footer the rest of the year.
