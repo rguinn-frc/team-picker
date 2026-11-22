@@ -1228,15 +1228,10 @@ body.forbidden-font * {
   font-size: 0.6em;
   margin-left: 1px;
 }
-.pc-quirk {
-  margin-top: 8px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.035);
-  border-left: 3px solid var(--player-color, var(--line));
-  font-size: 0.74rem;
-  line-height: 1.4;
-  color: #b9c5dd;
+.pc-badge.homebody {
+  background: #3f3a2e;
+  border: 1px solid #6b6146;
+  color: #e7dcc0;
 }
 
 .fine-print-strip {

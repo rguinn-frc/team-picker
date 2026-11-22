@@ -38,7 +38,14 @@ const TAGLINES = [
   "Tonight, someone becomes a cautionary tale",
   "Skill issues, quantified daily",
   "Now with 100% more public accountability",
-  "Handcrafted matchups. Machine-crafted mockery."
+  "Handcrafted matchups. Machine-crafted mockery.",
+  "Premium edition sold separately (Tom already bought it)",
+  "One session only. Dylan's rules.",
+  "Please pause the football game before puck drop",
+  "Featuring the self-proclaimed best player in the group",
+  "Run it back? (Dylan has left the chat)",
+  "Not pay-to-win. Allegedly.",
+  "Lucky bounces not included (Ryan checked)"
 ];
 
 //-------------------------------------------------------------
@@ -288,7 +295,9 @@ const MEANWHILE_GCD = [
 const MEANWHILE_LCD = [
   "Meanwhile, {player} lost every single game. Pour one out.",
   "In lesser news: {player} went 0-3. The less said, the better.",
-  "Also that night: {player} donated three wins to charity."
+  "Also that night: {player} donated three wins to charity.",
+  "Meanwhile, {player} went 0-3 and is already drafting excuses.",
+  "Also that night: {player} went 0-3. Somebody check if the football game was on."
 ];
 
 //-------------------------------------------------------------
@@ -324,7 +333,13 @@ const GAZETTE_FILLER = [
   "Crossword Answer Is Just 'Skill Issue' Again",
   "Local Sheet Celebrates Another Day of Truth",
   "Horoscope: Avoid One-Timers This Week",
-  "Sports: Yes, This Is the Sports Section"
+  "Sports: Yes, This Is the Sports Section",
+  "Consumer Watch: Is the Premium Edition Pay-to-Win? One Man Says Yes",
+  "Local Man Still Waiting on Dylan's Run It Back",
+  "TV Listings: Whatever Football Game Nick Has On",
+  "Op-Ed: \"I'm Still the Best\" by Ryan",
+  "Real Estate: Dylan's Couch Remains Off the Market",
+  "Science: Ryan's Posts-Hit Rate Defies Probability"
 ];
 
 //-------------------------------------------------------------

@@ -493,7 +493,7 @@ function computePersonaStats(entries) {
   const rating = Object.fromEntries(computeRatings(allTeams).map(t => [t.name, t.rating]));
   const sessions = buildSessions(entries);
   const per = {};
-  PLAYERS.forEach(p => per[p] = { rated: 0, betterTeam: 0, lostWithBetter: 0, wonWithWorse: 0 });
+  PLAYERS.forEach(p => per[p] = { betterTeam: 0, lostWithBetter: 0 });
 
   entries.forEach(e => {
     const wr = rating[e["Winning Team"]], lr = rating[e["Losing Team"]];
@@ -502,10 +502,8 @@ function computePersonaStats(entries) {
       const won = wonGame(e, p), lost = lostGame(e, p);
       if (!won && !lost) return;
       const mine = won ? wr : lr, theirs = won ? lr : wr;
-      per[p].rated++;
       if (mine > theirs) per[p].betterTeam++;
       if (lost && mine > theirs) per[p].lostWithBetter++;
-      if (won && mine < theirs) per[p].wonWithWorse++;
     });
   });
 
@@ -519,8 +517,7 @@ function computePersonaStats(entries) {
   const byDate = {};
   sessions.forEach(s => { if (s.date) (byDate[s.date] ||= []).push(s); });
   const dates = Object.keys(byDate);
-  const runBackDates = dates.filter(d => byDate[d].length > 1)
-    .sort((a, b) => parseEntryDate(a) - parseEntryDate(b));
+  const runBackNights = dates.filter(d => byDate[d].length > 1).length;
   const lastDate = dates.slice().sort((a, b) => parseEntryDate(b) - parseEntryDate(a))[0] || null;
 
   return {
@@ -528,8 +525,7 @@ function computePersonaStats(entries) {
     nickGcdCount: nickGcds.length,
     nickAllBetter,
     nights: dates.length,
-    runBackNights: runBackDates.length,
-    lastRunBack: runBackDates[runBackDates.length - 1] || null,
+    runBackNights,
     daysSinceLastSession: lastDate ? daysAgo(lastDate) : null
   };
 }
@@ -815,35 +811,27 @@ function renderBanner(recent, stats) {
 // big rank numbers, throne-to-rock-bottom labels, and a
 // "distance to the player above you" line on every card.
 //-------------------------------------------------------------
-// One personality touch per player card — each a different kind of gag.
-function personaBits(p, index, persona, s) {
-  const out = { badge: "", quirk: "", gcdSuffix: "" };
+// One small personality touch per player card: a badge, or for Nick, an asterisk.
+// Hover titles carry the receipts for anyone who wants them.
+function personaBits(p, index, persona) {
+  const out = { badge: "", gcdSuffix: "" };
   if (!persona) return out;
   const me = persona.per[p];
-  const pct = (n, d) => d ? Math.round((n / d) * 100) : 0;
 
   if (p === "Tom") {
     out.badge = '<span class="pc-badge premium" title="Allegedly pay-to-win (source: Dylan)">💳 PREMIUM EDITION</span>';
-    out.quirk = `💳 Dylan maintains the premium edition explains all ${s.wins} of Tom's wins, every lucky poke check, and why the puck never leaves his stick.`;
   }
   if (p === "Ryan") {
+    const luck = `Lost ${me.lostWithBetter} of ${me.betterTeam} games with the better team. Unlucky, apparently.`;
     out.badge = index === 0
-      ? '<span class="pc-badge mirror">🪞 "as I predicted"</span>'
-      : '<span class="pc-badge mirror">🪞 self-ranked #1</span>';
-    out.quirk = `🍀 "Bad luck" report: lost ${me.lostWithBetter} of ${me.betterTeam} games with the better team (${pct(me.lostWithBetter, me.betterTeam)}%).`;
+      ? `<span class="pc-badge mirror" title="${luck}">🪞 "as I predicted"</span>`
+      : `<span class="pc-badge mirror" title="${luck}">🪞 self-ranked #1</span>`;
   }
   if (p === "Nick" && persona.nickGcdCount > 0) {
-    const others = PLAYERS.filter(x => x !== "Nick");
-    const othersPct = Math.round(others.reduce((s, x) => s + pct(persona.per[x].betterTeam, persona.per[x].rated), 0) / others.length);
-    out.gcdSuffix = '<sup class="asterisk">*</sup>';
-    out.quirk = `📺 *${persona.nickAllBetter} of ${persona.nickGcdCount} GCDs came with the better team in all three games. Better team in ${pct(me.betterTeam, me.rated)}% of games (everyone else: ~${othersPct}%). Football was probably on.`;
+    out.gcdSuffix = `<sup class="asterisk" title="${persona.nickAllBetter} of ${persona.nickGcdCount} came with the better team in all three games">*</sup>`;
   }
   if (p === "Dylan") {
-    const mostUpsets = PLAYERS.every(x => persona.per[x].wonWithWorse <= me.wonWithWorse);
-    const runBack = persona.lastRunBack
-      ? `the crew has run it back on ${persona.runBackNights} of ${persona.nights} nights (last: ${persona.lastRunBack}). He'd rather be home.`
-      : `the crew has never run it back. He'd rather be home.`;
-    out.quirk = `🧠 ${me.wonWithWorse} wins with the worse team${mostUpsets ? " (most in the crew)" : ""}; he knows every player's zone abilities. 🔁 Meanwhile, ${runBack}`;
+    out.badge = `<span class="pc-badge homebody" title="Runs it back on ${persona.runBackNights} of ${persona.nights} nights">🛋️ one and done</span>`;
   }
   return out;
 }
@@ -921,7 +909,7 @@ function renderStandings(stats, extras, persona) {
     card.style.setProperty("--player-color", flavor.color);
     card.dataset.player = p;
     const isBirthday = birthdayPlayersToday().includes(p);
-    const bits = personaBits(p, index, persona, s);
+    const bits = personaBits(p, index, persona);
     card.innerHTML = `
       <div class="pc-rankcol">
         <div class="pc-ranknum">${index + 1}</div>
@@ -958,7 +946,6 @@ function renderStandings(stats, extras, persona) {
           <div class="pc-bar-fill" style="width:${winPct}%"></div>
           <span class="pc-bar-label">${winPct}% win rate</span>
         </div>
-        ${bits.quirk ? `<div class="pc-quirk">${bits.quirk}</div>` : ""}
         ${droughtBits.length ? `<div class="pc-drought">${droughtBits.join(" · ")}</div>` : ""}
         <div class="pc-next" title="What's at stake">
           next GCD ⇒ “${getGcdTitle(s.gcds + 1)}” · next LCD ⇒ “${getLcdTitle(s.lcds + 1)}”
