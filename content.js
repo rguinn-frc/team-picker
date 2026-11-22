@@ -354,6 +354,53 @@ const FORTUNES = [
 ];
 
 //-------------------------------------------------------------
+// BIRTHDAYS (MM/DD, Central Time). On the day: a cake card with
+// one candle per GCD to blow out, a party hat in the standings,
+// and a countdown in the footer the rest of the year.
+//-------------------------------------------------------------
+const BIRTHDAYS = {
+  Tom: "11/22",
+  Ryan: "12/28",
+  Nick: "07/19",
+  Dylan: "08/13"
+};
+
+// {p} = birthday player, {gcds}/{lcds} = career counts, {title} = current GCD title
+const BIRTHDAY_HEADLINES = [
+  "HAPPY BIRTHDAY, {P}!",
+  "IT'S {P} DAY. CLEAR THE ICE.",
+  "ANOTHER LAP AROUND THE SUN FOR {P}",
+  "{P} HAS LEVELED UP",
+  "NATIONAL {P} DAY (OBSERVED)",
+  "THE SHEET WISHES {P} A HAPPY BIRTHDAY",
+  "BIRTHDAY PROTOCOL ACTIVATED: {P}"
+];
+
+const BIRTHDAY_LINES = [
+  "{gcds} GCDs, {lcds} LCDs, and somehow only one birthday a year. Make it count.",
+  "Today's matchups are rigged in {p}'s favor. (They are not. But act like it.)",
+  "By royal decree, {p} cannot be LCD'd today. (Royal decree not legally binding.)",
+  "The Sheet has granted {p} immunity from trash talk until midnight. Mostly.",
+  "Scientists confirm {p} is one year older and zero years better at one-timers.",
+  "Gift idea: let {p} win one. Just one. On purpose. Nobody tell him.",
+  "{p} is now old enough to know better and still pull the goalie in the second period.",
+  "Celebrating {gcds} career sweeps and roughly {lcds} reasons to stay humble.",
+  "Birthday rules: {p} picks the music, the snacks, and the excuses.",
+  "Another year closer to the title \"{title}\" being a tombstone inscription."
+];
+
+const BIRTHDAY_WISHES = [
+  "Wish granted: tonight's first goal goes in off a defenseman's skate. Yours.",
+  "Wish granted: zero posts hit tonight. (Offer void after the first period.)",
+  "Wish granted: one guaranteed GCD... in your dreams. Literally.",
+  "Wish granted: everyone else's controller is at 4% battery.",
+  "Wish received. The Sheet is processing your request. Estimated wait: 1 year.",
+  "Wish granted: your teammate will finally pass you the puck.",
+  "Wish granted: a cake-flavored power play.",
+  "Wish denied by league office. Happy birthday anyway."
+];
+
+//-------------------------------------------------------------
 // STANDINGS RANK LABELS (1st through 4th)
 //-------------------------------------------------------------
 const RANK_LABELS = ["THE THRONE", "CONTENDER", "MID TABLE", "ROCK BOTTOM"];

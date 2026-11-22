@@ -821,6 +821,7 @@ function renderStandings(stats, extras) {
       + (hasMaxLcds && !isLeader ? " shame" : "");
     card.style.setProperty("--player-color", flavor.color);
     card.dataset.player = p;
+    const isBirthday = birthdayPlayersToday().includes(p);
     card.innerHTML = `
       <div class="pc-rankcol">
         <div class="pc-ranknum">${index + 1}</div>
@@ -828,8 +829,9 @@ function renderStandings(stats, extras) {
       </div>
       <div class="pc-main">
         <div class="pc-head">
-          <span class="pc-emoji">${flavor.emoji}</span>
+          <span class="pc-emoji">${isBirthday ? "🥳" : flavor.emoji}</span>
           <span class="pc-name">${p}</span>
+          ${isBirthday ? '<span class="pc-badge bday">🎂 BIRTHDAY</span>' : ""}
           ${isLeader ? '<span class="pc-badge king">👑 KING</span>' : ""}
           ${hasMaxLcds && !isLeader ? '<span class="pc-badge help">🆘 needs help</span>' : ""}
           ${streakBit}
@@ -936,6 +938,98 @@ function renderDailyFlavor() {
     const month = new Date().getMonth();
     fortuneEl.innerHTML = `<span class="fortune-eye">🔮</span> ${text} <span class="fortune-garnish">${MONTH_GARNISH[month] || ""}</span>`;
   }
+}
+
+//-------------------------------------------------------------
+// BIRTHDAYS — a cake card on the day (one candle per GCD, tap to
+// blow them out), plus a countdown in the footer the rest of the year.
+//-------------------------------------------------------------
+function birthdayPlayersToday() {
+  const monthDay = chicagoDateString().slice(0, 5); // "MM/DD"
+  return PLAYERS.filter(p => BIRTHDAYS[p] === monthDay);
+}
+
+function daysUntilBirthday(player) {
+  const today = parseEntryDate(chicagoDateString());
+  const [m, d] = BIRTHDAYS[player].split("/").map(Number);
+  let next = new Date(today.getFullYear(), m - 1, d);
+  if (next < today) next = new Date(today.getFullYear() + 1, m - 1, d);
+  return Math.round((next - today) / 86400000);
+}
+
+function renderNextBirthday() {
+  const el = document.getElementById("nextBirthday");
+  if (!el) return;
+  const upcoming = PLAYERS
+    .filter(p => BIRTHDAYS[p])
+    .map(p => ({ p, days: daysUntilBirthday(p) }))
+    .filter(x => x.days > 0)
+    .sort((a, b) => a.days - b.days)[0];
+  if (!upcoming) { el.textContent = ""; return; }
+  const when = upcoming.days === 1 ? "TOMORROW" : `in ${upcoming.days} days`;
+  el.innerHTML = `🎂 next birthday: <b>${upcoming.p}</b> ${when} <span>(${BIRTHDAYS[upcoming.p]})</span>`;
+}
+
+function renderBirthday(stats) {
+  const container = document.getElementById("birthday");
+  if (!container) return;
+  const players = birthdayPlayersToday();
+  container.innerHTML = "";
+
+  players.forEach(p => {
+    const s = (stats && stats[p]) || { gcds: 0, lcds: 0 };
+    const rng = dailyRng("birthday|" + p);
+    const fill = str => str
+      .replace(/\{P\}/g, p.toUpperCase())
+      .replace(/\{p\}/g, p)
+      .replace(/\{gcds\}/g, s.gcds)
+      .replace(/\{lcds\}/g, s.lcds)
+      .replace(/\{title\}/g, getGcdTitle(s.gcds) || "Untitled");
+    const headline = fill(pick(rng, BIRTHDAY_HEADLINES));
+    const line = fill(pick(rng, BIRTHDAY_LINES));
+    const wish = fill(pick(rng, BIRTHDAY_WISHES));
+    const candleCount = Math.max(1, Math.min(s.gcds, 12));
+
+    const balloons = ["🎈", "🎈", "🎉", "🎈", "🎊", "🎈"].map((b, i) =>
+      `<span class="bday-balloon" style="left:${8 + i * 16}%;animation-delay:${(i * 1.3).toFixed(1)}s;animation-duration:${(7 + (i % 3) * 1.5).toFixed(1)}s">${b}</span>`
+    ).join("");
+    const candles = Array.from({ length: candleCount }, () =>
+      `<button type="button" class="bday-candle" aria-label="Blow out candle"><span class="flame"></span><span class="smoke"></span></button>`
+    ).join("");
+
+    const card = document.createElement("div");
+    card.className = "bday-card";
+    card.innerHTML = `
+      <div class="bday-balloons" aria-hidden="true">${balloons}</div>
+      <div class="bday-inner">
+        <div class="bday-kicker">🎂 BIRTHDAY ALERT 🎂</div>
+        <div class="bday-headline">${headline}</div>
+        <div class="bday-line">${line}</div>
+        <div class="bday-cake">
+          <div class="bday-candles">${candles}</div>
+          <div class="bday-tier top"></div>
+          <div class="bday-tier bottom"><span>${p.toUpperCase()}</span></div>
+        </div>
+        <div class="bday-hint">one candle per career GCD · tap to blow them out</div>
+        <div class="bday-wish" hidden>✨ ${wish}</div>
+      </div>
+    `;
+
+    const candleEls = [...card.querySelectorAll(".bday-candle")];
+    candleEls.forEach(c => c.addEventListener("click", () => {
+      if (c.classList.contains("out")) return;
+      c.classList.add("out");
+      if (candleEls.every(x => x.classList.contains("out"))) {
+        card.querySelector(".bday-hint").hidden = true;
+        card.querySelector(".bday-wish").hidden = false;
+        card.classList.add("wished");
+        rainEmoji(card, ["🎉", "🎊", "🎈", "🎂", "🥳"], 32);
+        showToast(`🎂 Happy birthday, ${p}! Make a wish.`);
+      }
+    }));
+
+    container.appendChild(card);
+  });
 }
 
 //-------------------------------------------------------------
@@ -1118,6 +1212,7 @@ function checkSpecialSeed(seed) {
 //-------------------------------------------------------------
 async function init() {
   renderDailyFlavor();
+  renderNextBirthday();
   initEasterEggs();
 
   try {
@@ -1178,12 +1273,14 @@ async function init() {
     const saved = await loadResults();
     const stats = computeScoreboard(saved);
     const extras = computeExtras(saved);
+    renderBirthday(stats);
     renderStandings(stats, extras);
     renderSessions(saved);
     const recent = findMostRecentGcdOrLcd(saved);
     renderBanner(recent, stats);
   } catch (err) {
     console.warn("Could not compute scoreboard", err.message);
+    renderBirthday(null);
   }
 }
 
