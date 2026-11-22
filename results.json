@@ -1498,5 +1498,65 @@
     "Losing Team": "Boston Bruins",
     "Losing Player 1": "Ryan",
     "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "498699",
+    "date": "11/21/2026",
+    "Winning Team": "New York Islanders",
+    "Winning Player 1": "Ryan",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Tom"
+  },
+  {
+    "matchup": "498699",
+    "date": "11/21/2026",
+    "Winning Team": "Buffalo Sabres",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Montr\u00e9al Canadiens",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "498699",
+    "date": "11/21/2026",
+    "Winning Team": "Utah Mammoth",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Washington Capitals",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
+  },
+  {
+    "matchup": "498699",
+    "date": "11/21/2026",
+    "Winning Team": "New Jersey Devils",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Ryan",
+    "Losing Team": "Detroit Red Wings",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "498699",
+    "date": "11/21/2026",
+    "Winning Team": "Vegas Golden Knights",
+    "Winning Player 1": "Nick",
+    "Winning Player 2": "Tom",
+    "Losing Team": "Ottawa Senators",
+    "Losing Player 1": "Ryan",
+    "Losing Player 2": "Dylan"
+  },
+  {
+    "matchup": "498699",
+    "date": "11/21/2026",
+    "Winning Team": "Montr\u00e9al Canadiens",
+    "Winning Player 1": "Tom",
+    "Winning Player 2": "Dylan",
+    "Losing Team": "Minnesota Wild",
+    "Losing Player 1": "Nick",
+    "Losing Player 2": "Ryan"
   }
 ]
