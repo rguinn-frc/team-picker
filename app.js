@@ -377,14 +377,39 @@ function renderMatchups(matchups, seed, options = {}) {
 //-------------------------------------------------------------
 // SCOREBOARD MATH
 //-------------------------------------------------------------
-function groupByMatchup(entries) {
-  const byMatchup = {};
+const GAMES_PER_SESSION = 3;
+
+// Split sheet entries into sessions of (at most) three games.
+// Usually one seed = one session, but two sessions can land on the same seed
+// (e.g. a slate copied after the hour rolled over), so a seed's games are
+// chunked in sheet order rather than lumped together.
+// Returns sessions oldest → newest: { key, seed, games, date }.
+function buildSessions(entries) {
+  const open = {};      // seed -> session still collecting games
+  const sessions = [];
   entries.forEach(entry => {
-    const m = entry.matchup;
-    if (!byMatchup[m]) byMatchup[m] = [];
-    byMatchup[m].push(entry);
+    const seed = String(entry.matchup);
+    let s = open[seed];
+    if (!s || s.games.length >= GAMES_PER_SESSION) {
+      const n = sessions.filter(x => x.seed === seed).length;
+      s = { key: n ? `${seed}#${n + 1}` : seed, seed, idx: n, games: [], date: entry.date || null };
+      open[seed] = s;
+      sessions.push(s);
+    }
+    s.games.push(entry);
   });
-  return byMatchup;
+  return sessions.sort((a, b) => (parseInt(a.seed) - parseInt(b.seed)) || (a.idx - b.idx));
+}
+
+const wonGame = (e, p) => [e["Winning Player 1"], e["Winning Player 2"]].includes(p);
+const lostGame = (e, p) => [e["Losing Player 1"], e["Losing Player 2"]].includes(p);
+
+function sweptAll(session, p) {
+  return session.games.length >= GAMES_PER_SESSION && session.games.every(e => wonGame(e, p));
+}
+
+function sweptBy(session, p) {
+  return session.games.length >= GAMES_PER_SESSION && session.games.every(e => lostGame(e, p));
 }
 
 function computeScoreboard(entries) {
@@ -400,19 +425,10 @@ function computeScoreboard(entries) {
       if (losers.includes(p)) stats[p].losses += 1;
     });
   });
-  const byMatchup = groupByMatchup(entries);
-  Object.values(byMatchup).forEach(group => {
+  buildSessions(entries).forEach(session => {
     PLAYERS.forEach(p => {
-      const winAll = group.length > 0 && group.every(e => {
-        const winners = [e["Winning Player 1"], e["Winning Player 2"]];
-        return winners.includes(p);
-      });
-      if (winAll && group.length >= 3) stats[p].gcds += 1;
-      const loseAll = group.length > 0 && group.every(e => {
-        const losers = [e["Losing Player 1"], e["Losing Player 2"]];
-        return losers.includes(p);
-      });
-      if (loseAll && group.length >= 3) stats[p].lcds += 1;
+      if (sweptAll(session, p)) stats[p].gcds += 1;
+      if (sweptBy(session, p)) stats[p].lcds += 1;
     });
   });
   return stats;
@@ -439,29 +455,23 @@ function computeExtras(entries) {
   PLAYERS.forEach(p => {
     extras[p] = { lastGcd: null, lastLcd: null, streakType: null, streakLen: 0 };
   });
-  const byMatchup = groupByMatchup(entries);
-  const seedsAsc = Object.keys(byMatchup).sort((a, b) => parseInt(a) - parseInt(b));
+  const sessions = buildSessions(entries);
 
-  seedsAsc.forEach(seedKey => {
-    const group = byMatchup[seedKey];
-    if (group.length < 3) return;
+  sessions.forEach(session => {
     PLAYERS.forEach(p => {
-      const winAll = group.every(e => [e["Winning Player 1"], e["Winning Player 2"]].includes(p));
-      const loseAll = group.every(e => [e["Losing Player 1"], e["Losing Player 2"]].includes(p));
-      if (winAll) extras[p].lastGcd = group[0]?.date || null;
-      if (loseAll) extras[p].lastLcd = group[0]?.date || null;
+      if (sweptAll(session, p)) extras[p].lastGcd = session.date;
+      if (sweptBy(session, p)) extras[p].lastLcd = session.date;
     });
   });
 
-  // Per-game win/loss streak, walking backwards through all games in seed order
-  const allGames = [];
-  seedsAsc.forEach(seedKey => byMatchup[seedKey].forEach(e => allGames.push(e)));
+  // Per-game win/loss streak, walking backwards through all games in session order
+  const allGames = sessions.flatMap(s => s.games);
   PLAYERS.forEach(p => {
     let type = null, len = 0;
     for (let i = allGames.length - 1; i >= 0; i--) {
       const e = allGames[i];
-      const won = [e["Winning Player 1"], e["Winning Player 2"]].includes(p);
-      const lost = [e["Losing Player 1"], e["Losing Player 2"]].includes(p);
+      const won = wonGame(e, p);
+      const lost = lostGame(e, p);
       if (!won && !lost) continue;
       const t = won ? "W" : "L";
       if (type === null) { type = t; len = 1; }
@@ -497,33 +507,31 @@ function titleTier(count) {
 // MOST RECENT GCD/LCD (also detects a same-night double feature)
 //-------------------------------------------------------------
 function findMostRecentGcdOrLcd(entries) {
-  const byMatchup = groupByMatchup(entries);
-  const sortedMatchups = Object.keys(byMatchup).sort((a, b) => parseInt(b) - parseInt(a));
+  const sessions = buildSessions(entries).reverse(); // newest first
 
-  for (const matchup of sortedMatchups) {
-    const group = byMatchup[matchup];
-    if (group.length < 3) continue;
-    const date = group[0]?.date || "Unknown";
+  for (const session of sessions) {
+    const gcdPlayer = PLAYERS.find(p => sweptAll(session, p)) || null;
+    const lcdPlayer = PLAYERS.find(p => sweptBy(session, p)) || null;
+    if (!gcdPlayer && !lcdPlayer) continue;
 
-    let gcdPlayer = null, lcdPlayer = null;
-    for (const p of PLAYERS) {
-      const winAll = group.every(e => [e["Winning Player 1"], e["Winning Player 2"]].includes(p));
-      if (winAll && !gcdPlayer) gcdPlayer = p;
-      const loseAll = group.every(e => [e["Losing Player 1"], e["Losing Player 2"]].includes(p));
-      if (loseAll && !lcdPlayer) lcdPlayer = p;
-    }
+    const date = session.date || "Unknown";
+    const primaryType = gcdPlayer ? "gcd" : "lcd";
 
-    if (gcdPlayer || lcdPlayer) {
-      const primaryType = gcdPlayer ? "gcd" : "lcd";
-      return {
-        type: primaryType,
-        player: primaryType === "gcd" ? gcdPlayer : lcdPlayer,
-        date,
-        matchup,
-        alsoLcd: primaryType === "gcd" ? lcdPlayer : null,
-        alsoGcdPlayer: null
-      };
-    }
+    // The "meanwhile" footnote covers the whole night, not just this session:
+    // another session that same date may have produced the opposite outcome.
+    const sameNight = sessions.filter(s => s.date === session.date);
+    const nightLcd = lcdPlayer
+      || sameNight.map(s => PLAYERS.find(p => sweptBy(s, p))).find(Boolean) || null;
+    const nightGcd = sameNight.map(s => PLAYERS.find(p => sweptAll(s, p))).find(Boolean) || null;
+
+    return {
+      type: primaryType,
+      player: primaryType === "gcd" ? gcdPlayer : lcdPlayer,
+      date,
+      matchup: session.key,
+      alsoLcd: primaryType === "gcd" ? nightLcd : null,
+      alsoGcdPlayer: primaryType === "lcd" ? nightGcd : null
+    };
   }
   return null;
 }
@@ -876,24 +884,22 @@ function renderStandings(stats, extras) {
 function renderSessions(entries) {
   const container = document.getElementById("sessions");
   if (!container) return;
-  const byMatchup = groupByMatchup(entries);
-  const seedsDesc = Object.keys(byMatchup)
-    .filter(k => byMatchup[k].length >= 3)
-    .sort((a, b) => parseInt(b) - parseInt(a))
+  const recent = buildSessions(entries)
+    .filter(s => s.games.length >= GAMES_PER_SESSION)
+    .reverse()
     .slice(0, 6);
 
-  if (!seedsDesc.length) { container.innerHTML = ""; return; }
+  if (!recent.length) { container.innerHTML = ""; return; }
 
-  container.innerHTML = seedsDesc.map(seedKey => {
-    const group = byMatchup[seedKey];
-    const date = group[0]?.date || "?";
+  container.innerHTML = recent.map(session => {
+    const group = session.games;
+    const date = session.date || "?";
     const chips = PLAYERS.map(p => {
-      const wins = group.filter(e => [e["Winning Player 1"], e["Winning Player 2"]].includes(p)).length;
-      const losses = group.filter(e => [e["Losing Player 1"], e["Losing Player 2"]].includes(p)).length;
-      const played = wins + losses;
+      const wins = group.filter(e => wonGame(e, p)).length;
+      const losses = group.filter(e => lostGame(e, p)).length;
       let cls = "";
-      if (played >= 3 && wins === played) cls = "swept";
-      else if (played >= 3 && wins === 0) cls = "sweptby";
+      if (sweptAll(session, p)) cls = "swept";
+      else if (sweptBy(session, p)) cls = "sweptby";
       const flavor = PLAYER_FLAVOR[p] || { color: "#94a3b8" };
       return `<span class="sess-chip ${cls}" style="--player-color:${flavor.color}">
         ${p.charAt(0)} <b>${wins}-${losses}</b>${cls === "swept" ? " 👑" : cls === "sweptby" ? " 💀" : ""}
@@ -1039,7 +1045,10 @@ function showToast(msg) {
 // COPY RESULTS (format preserved exactly — the Sheet depends on it)
 //-------------------------------------------------------------
 async function copyResults() {
-  const seedVal = getSeed();
+  // Record the seed of the slate that was actually played (the one on screen),
+  // not the current clock hour — copying after the hour rolls over would
+  // otherwise file this session under the next hour's seed.
+  const seedVal = lastSeed ?? getSeed();
   const startUtc = new Date(seedVal * 3600000);
   const dateStr = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Chicago",
